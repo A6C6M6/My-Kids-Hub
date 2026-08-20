@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!form || !resetBtn || !emailInput) return;
 
+    resetBtn.disabled = true;
+
     const RESEND_DELAY = 60;
     let resendTimer = null;
     let lastSubmittedEmail = "";
@@ -37,20 +39,27 @@ document.addEventListener("DOMContentLoaded", () => {
         resetMessage.className = "reset-message";
     };
 
+    const updateSubmitState = (isValid) => {
+        resetBtn.disabled = !isValid;
+    };
+
     const validateEmail = (showRequiredMessage = true) => {
         const email = emailInput.value.trim();
 
         if (!email) {
             setEmailFeedback(showRequiredMessage ? "Email address is required." : "", "invalid");
+            updateSubmitState(false);
             return false;
         }
 
         if (!isValidEmail(email)) {
             setEmailFeedback("Please enter a valid email address.", "invalid");
+            updateSubmitState(false);
             return false;
         }
 
         setEmailFeedback("Valid email address.", "valid");
+        updateSubmitState(true);
         return true;
     };
 

@@ -91,3 +91,23 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .brand-panel, .form-panel { animation: none; }
 }
+
+/* ===== My-Kids-Hub OAuth button state / trust note ===== */
+.oauth-btn:disabled {
+    opacity: .68;
+    cursor: wait;
+}
+.oauth-trust-note {
+    margin: 8px 0 0;
+    text-align: center;
+    color: #8292a7;
+    font-size: 11px;
+    line-height: 1.4;
+}
+.oauth-trust-note i {
+    margin-right: 4px;
+    color: #198754;
+}
+@media (min-width: 1121px) and (max-height: 860px) {
+    .oauth-trust-note { font-size: 9px; margin-top: 5px; }
+}
