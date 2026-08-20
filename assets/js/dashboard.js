@@ -1,3 +1,50 @@
+// Shared Agri Tracker authentication guard and profile binding.
+document.addEventListener("DOMContentLoaded", async () => {
+    if (!window.supabaseClient) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    try {
+        const { data, error } = await window.supabaseClient.auth.getUser();
+        if (error || !data || !data.user) {
+            window.location.href = "index.html";
+            return;
+        }
+
+        const user = data.user;
+        const email = user.email || "User";
+        const displayName = user.user_metadata?.full_name || email;
+        const initials = displayName.trim().slice(0, 2).toUpperCase();
+
+        document.querySelectorAll(".user-info strong, .profile-text strong").forEach(el => {
+            el.textContent = displayName;
+        });
+        document.querySelectorAll(".avatar").forEach(el => {
+            el.textContent = initials;
+        });
+
+        const subtitle = document.querySelector(".topbar-left p");
+        if (subtitle) {
+            subtitle.textContent = `Welcome back, ${displayName}! Here's what's happening today.`;
+        }
+
+        document.querySelectorAll(".logout-btn").forEach(btn => {
+            btn.addEventListener("click", async (event) => {
+                event.preventDefault();
+                try {
+                    await window.supabaseClient.auth.signOut();
+                } finally {
+                    window.location.href = "index.html";
+                }
+            });
+        });
+    } catch (error) {
+        console.error("My Kids Hub session check failed:", error);
+        window.location.href = "index.html";
+    }
+});
+
 // Sidebar toggle (mobile)
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menuToggle');
