@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | My-Kids-Hub</title>
+    <meta name="description" content="Create a new My-Kids-Hub school fee management account.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/register.css">
+</head>
+<body>
+<main class="register-page">
+    <section class="brand-panel" aria-label="My-Kids-Hub">
+        <div class="brand-dots"></div>
+        <div class="brand-content">
+            <div class="brand-logo" aria-hidden="true">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 8 L92 40 H82 V88 H18 V40 H8 Z" fill="#ffffff"/>
+                    <rect x="28" y="50" width="44" height="38" rx="4" fill="#0056b3"/>
+                    <rect x="44" y="16" width="12" height="12" fill="#ffcc00"/>
+                    <circle cx="40" cy="62" r="7" fill="#ffe9a8"/>
+                    <circle cx="60" cy="62" r="7" fill="#ffcfcf"/>
+                    <rect x="30" y="80" width="40" height="8" rx="2" fill="#ffffff"/>
+                </svg>
+            </div>
+            <h1>My-Kids-<span>Hub</span></h1>
+            <p class="brand-subtitle">SCHOOL FEE MANAGEMENT</p>
+            <div class="brand-line"></div>
+            <p class="brand-tagline">Smart School. Happy Parents.<br>Bright Future.</p>
+            <div class="brand-illustration" aria-hidden="true">
+                <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="160" cy="205" rx="140" ry="10" fill="#003f82" opacity=".4"/>
+                    <rect x="10" y="180" width="300" height="14" rx="4" fill="#b9793f"/>
+                    <rect x="20" y="194" width="14" height="18" fill="#8a5a2c"/>
+                    <rect x="286" y="194" width="14" height="18" fill="#8a5a2c"/>
+                    <rect x="34" y="150" width="26" height="30" rx="4" fill="#e8f1fb"/>
+                    <path d="M47 150 C30 140 30 115 47 100 C64 115 64 140 47 150Z" fill="#2f9e6b"/>
+                    <rect x="70" y="158" width="90" height="16" rx="2" fill="#ffcc00"/>
+                    <rect x="76" y="142" width="84" height="16" rx="2" fill="#2f9e6b"/>
+                    <rect x="70" y="126" width="90" height="16" rx="2" fill="#e15b5b"/>
+                    <rect x="170" y="90" width="90" height="90" rx="18" fill="#0056b3"/>
+                    <rect x="180" y="60" width="18" height="40" rx="8" fill="#003f82"/>
+                    <rect x="232" y="60" width="18" height="40" rx="8" fill="#003f82"/>
+                    <rect x="192" y="86" width="46" height="10" rx="5" fill="#003f82"/>
+                    <rect x="184" y="122" width="52" height="40" rx="10" fill="#ffcc00"/>
+                    <circle cx="210" cy="142" r="4" fill="#b98c00"/>
+                    <rect x="248" y="110" width="10" height="55" rx="5" fill="#003f82"/>
+                    <rect x="270" y="140" width="30" height="40" rx="4" fill="#1f6fd6"/>
+                    <rect x="276" y="110" width="4" height="34" fill="#ffcc00"/>
+                    <rect x="284" y="105" width="4" height="39" fill="#e15b5b"/>
+                    <rect x="292" y="112" width="4" height="32" fill="#2f9e6b"/>
+                </svg>
+            </div>
+            <div class="feature-row">
+                <div><i class="fa-solid fa-shield-halved"></i><span>Secure<br>and Safe</span></div>
+                <div><i class="fa-solid fa-clock-rotate-left"></i><span>Save Time<br>and Effort</span></div>
+                <div><i class="fa-solid fa-chart-line"></i><span>Track &amp; Manage<br>Easily</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="form-panel">
+        <div class="form-card">
+            <div class="register-icon"><i class="fa-solid fa-user-plus"></i></div>
+            <span class="eyebrow">Create Account</span>
+            <h2>Create your My-Kids-Hub account</h2>
+            <p class="form-subtitle">Register to securely access school fee management.</p>
+
+            <div class="oauth-row">
+                <button type="button" class="oauth-btn" id="googleSignupBtn">
+                    <i class="fa-brands fa-google"></i><span>Sign up with Google</span>
+                </button>
+                <button type="button" class="oauth-btn" id="appleSignupBtn">
+                    <i class="fa-brands fa-apple"></i><span>Sign up with Apple</span>
+                </button>
+            </div>
+            <div class="divider"><span>or register with email</span></div>
+
+            <form id="registerForm" novalidate>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fullName">Full Name <span>*</span></label>
+                        <div class="input-wrap">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter Full Name" autocomplete="name" required>
+                        </div>
+                        <div class="field-feedback" id="fullNameFeedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number <span>*</span></label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-phone input-icon"></i>
+                            <input type="tel" id="mobile" name="mobile" placeholder="10-digit mobile number" autocomplete="tel" inputmode="numeric" maxlength="10" required>
+                        </div>
+                        <div class="field-feedback" id="mobileFeedback"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email ID <span>*</span></label>
+                    <div class="input-wrap">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <input type="email" id="email" name="email" placeholder="Enter Email Address" autocomplete="email" required>
+                    </div>
+                    <div class="field-feedback" id="emailFeedback"></div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="password">Password <span>*</span></label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" placeholder="Enter Password" autocomplete="new-password" minlength="6" required>
+                            <button type="button" class="password-toggle" data-target="password" aria-label="Show password"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                        <div class="strength-wrap" id="passwordStrengthWrap" hidden>
+                            <div class="strength-bar"><span id="passwordStrengthBar"></span></div>
+                            <span id="passwordStrengthText">Weak</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password <span>*</span></label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-lock input-icon"></i>
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" minlength="6" required>
+                            <button type="button" class="password-toggle" data-target="confirmPassword" aria-label="Show password"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                        <div class="field-feedback" id="confirmPasswordFeedback"></div>
+                    </div>
+                </div>
+
+                <label class="terms-row">
+                    <input type="checkbox" id="termsAccepted" name="termsAccepted">
+                    <span>I agree to the Terms &amp; Privacy Policy.</span>
+                </label>
+
+                <div id="formMessage" class="form-message" aria-live="polite"></div>
+
+                <button type="submit" class="register-btn" id="registerBtn">
+                    <i class="fa-solid fa-user-plus"></i> Register New Account
+                </button>
+
+                <div class="login-link">Already have an account? <a href="index.html">Login Here</a></div>
+            </form>
+        </div>
+        <p class="footer-note"><i class="fa-solid fa-shield-halved"></i> Your account registration is protected by secure authentication.</p>
+        <p class="footer-copy">&copy; 2024 My-Kids-Hub. All rights reserved.</p>
+    </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/register.js"></script>
+</body>
+</html>

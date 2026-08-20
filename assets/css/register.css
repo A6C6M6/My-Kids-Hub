@@ -1,0 +1,93 @@
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#eef5ff;color:#17345d}.register-page{min-height:100vh;display:grid;grid-template-columns:minmax(430px,1fr) minmax(560px,1.15fr);padding:28px;gap:0}.brand-panel{position:relative;overflow:hidden;border-radius:28px 0 0 28px;background:linear-gradient(145deg,#0759ae,#0065c9 58%,#0a72d5);color:#fff;min-height:calc(100vh - 56px)}.brand-panel:after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;right:-180px;bottom:-150px;background:rgba(255,255,255,.08)}.brand-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.13) 1px,transparent 1px);background-size:22px 22px;opacity:.45}.brand-content{position:relative;z-index:1;text-align:center;padding:62px 42px 36px;height:100%;display:flex;flex-direction:column;align-items:center}.brand-logo{width:78px;height:78px;border-radius:22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.12)}.brand-logo svg{width:58px;height:58px}.brand-content h1{font-family:Poppins,sans-serif;font-size:46px;line-height:1;margin:24px 0 7px;font-weight:800}.brand-content h1 span{color:#ffcf00}.brand-subtitle{font-weight:700;letter-spacing:1.2px;font-size:16px;margin:0}.brand-line{height:4px;width:60px;background:#ffcf00;border-radius:99px;margin:20px 0}.brand-tagline{font-size:17px;line-height:1.55;font-weight:600;margin:0}.brand-illustration{width:min(420px,90%);margin-top:auto}.brand-illustration svg{width:100%;display:block}.feature-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:540px}.feature-row>div{min-height:78px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);border-radius:16px;display:flex;align-items:center;justify-content:center;gap:9px;padding:10px;font-size:12px;font-weight:700;line-height:1.35}.feature-row i{color:#ffcf00;font-size:18px}.form-panel{background:#fff;border-radius:0 28px 28px 0;min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:38px 60px;box-shadow:0 18px 55px rgba(20,62,110,.1);overflow-y:auto}.form-card{width:min(680px,100%);min-width:0}.register-icon{width:66px;height:66px;border-radius:20px;background:#edf5ff;border:1px solid #d6e7fb;color:#0964bd;display:grid;place-items:center;font-size:25px;margin:0 auto 18px}.eyebrow{display:block;width:max-content;margin:0 auto 12px;padding:6px 13px;border-radius:99px;background:#fff7d6;color:#8d6a00;text-transform:uppercase;letter-spacing:1px;font-size:11px;font-weight:800}.form-card h2{text-align:center;font-family:Poppins,sans-serif;font-size:30px;margin:0;color:#17345d}.form-subtitle{text-align:center;color:#70829b;line-height:1.5;margin:9px auto 22px;max-width:530px}.oauth-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.oauth-btn{height:46px;border:1px solid #d9e3ef;background:#fff;border-radius:11px;color:#24405f;font-weight:700;cursor:pointer;transition:.2s}.oauth-btn:hover{border-color:#8ebbe8;background:#f8fbff}.oauth-btn i{margin-right:8px}.divider{display:flex;align-items:center;gap:12px;color:#91a0b4;font-size:12px;margin:20px 0}.divider:before,.divider:after{content:"";height:1px;background:#e5ebf2;flex:1}.form-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.form-group{margin-bottom:15px}.form-group label{display:block;font-size:13px;font-weight:700;color:#17345d;margin-bottom:7px}.form-group label span{color:#df4141}.input-wrap{position:relative}.input-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#8ba0b7;pointer-events:none}.input-wrap input{display:block;box-sizing:border-box;width:100%;min-width:0;height:48px;border:1px solid #d7e1ed;border-radius:11px;padding:0 46px 0 43px;font-size:14px;outline:none;color:#17345d;background:#fff;transition:.2s}.input-wrap input:focus{border-color:#2f83d7;box-shadow:0 0 0 3px rgba(47,131,215,.1)}.input-wrap input.is-valid{border-color:#25a269}.input-wrap input.is-invalid{border-color:#df5555}.password-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#7c90a8;width:34px;height:34px;cursor:pointer}.field-feedback{font-size:11px;margin-top:5px;min-height:14px}.field-feedback.valid{color:#198754}.field-feedback.invalid{color:#d64545}.strength-wrap{display:flex;align-items:center;gap:9px;margin-top:7px}.strength-bar{height:5px;flex:1;background:#e8edf3;border-radius:99px;overflow:hidden}.strength-bar span{display:block;height:100%;width:0;background:#df5555;transition:.2s}.strength-wrap>span{font-size:11px;font-weight:700;min-width:56px;text-align:right;color:#7c90a8}.terms-row{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#63758c;line-height:1.45;margin:6px 0 14px}.terms-row input{margin-top:3px;accent-color:#0968c5}.terms-row a{color:#0968c5;font-weight:700;text-decoration:none}.form-message{min-height:18px;font-size:12px;margin:7px 0 12px;border-radius:9px}.form-message.success,.form-message.error{padding:11px 12px}.form-message.success{background:#ecfaf3;color:#167348;border:1px solid #bce7d0}.form-message.error{background:#fff0f0;color:#b53232;border:1px solid #f0c4c4}.register-btn{width:100%;height:50px;border:0;border-radius:11px;background:#0868c9;color:#fff;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 10px 22px rgba(8,104,201,.2);transition:.2s}.register-btn:hover{background:#075db5}.register-btn:disabled{opacity:.65;cursor:not-allowed}.login-link{text-align:center;font-size:13px;color:#70829b;margin-top:17px}.login-link a{color:#0868c9;font-weight:800;text-decoration:none}.footer-note,.footer-copy{text-align:center;color:#8292a7;font-size:11px;margin:18px 0 0}.footer-copy{margin-top:7px}@media(max-width:1120px){.register-page{grid-template-columns:1fr;padding:14px}.brand-panel{display:none}.form-panel{min-height:calc(100vh - 28px);border-radius:24px;padding:30px 22px}}@media(max-width:620px){.oauth-row,.form-grid{grid-template-columns:1fr}.form-card h2{font-size:25px}.form-panel{padding:24px 16px}.oauth-btn{font-size:13px}}
+
+
+/* ===== My-Kids-Hub viewport auto-fit patch: Registration UI only ===== */
+html, body {
+    width: 100%;
+    min-height: 100%;
+}
+body {
+    overflow: hidden;
+}
+.register-page {
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+    padding: clamp(12px, 2.5vh, 28px);
+}
+.brand-panel,
+.form-panel {
+    height: 100%;
+    min-height: 0;
+}
+.form-panel {
+    overflow: hidden;
+}
+.form-card {
+    min-width: 0;
+}
+.input-wrap,
+.form-group {
+    min-width: 0;
+}
+.input-wrap input {
+    min-width: 0;
+}
+.brand-panel {
+    animation: myKidsHubPageIn .38s ease-out both;
+}
+.form-panel {
+    animation: myKidsHubPageIn .38s .04s ease-out both;
+}
+@keyframes myKidsHubPageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 1121px) and (max-height: 860px) {
+    .register-page { padding: 12px 18px; }
+    .brand-content { padding: 30px 30px 20px; }
+    .brand-logo { width: 60px; height: 60px; border-radius: 18px; }
+    .brand-logo svg { width: 46px; height: 46px; }
+    .brand-content h1 { font-size: clamp(31px, 3.2vw, 40px); margin: 11px 0 5px; }
+    .brand-subtitle { font-size: 12px; }
+    .brand-line { margin: 10px 0; height: 3px; }
+    .brand-tagline { font-size: 13px; line-height: 1.35; }
+    .brand-illustration { width: min(300px, 76%); }
+    .feature-row { gap: 7px; }
+    .feature-row>div { min-height: 58px; padding: 7px 5px; font-size: 9.5px; }
+    .feature-row i { font-size: 14px; }
+    .form-panel { padding: 18px 42px; }
+    .register-icon { width: 52px; height: 52px; border-radius: 16px; font-size: 20px; margin-bottom: 10px; }
+    .eyebrow { margin-bottom: 8px; padding: 5px 10px; font-size: 9px; }
+    .form-card h2 { font-size: 24px; line-height: 1.12; }
+    .form-subtitle { font-size: 12px; margin: 6px auto 13px; }
+    .oauth-row { gap: 8px; }
+    .oauth-btn { height: 40px; font-size: 11.5px; }
+    .divider { margin: 11px 0; font-size: 10.5px; }
+    .form-grid { gap: 10px; }
+    .form-group { margin-bottom: 9px; }
+    .form-group label { font-size: 11px; margin-bottom: 5px; }
+    .input-wrap input { height: 42px; font-size: 12px; padding-left: 38px; padding-right: 40px; }
+    .input-icon { left: 12px; font-size: 12px; }
+    .password-toggle { right: 7px; width: 30px; height: 30px; }
+    .field-feedback { font-size: 9px; min-height: 11px; margin-top: 3px; }
+    .strength-wrap { margin-top: 4px; gap: 6px; }
+    .strength-bar { height: 4px; }
+    .strength-wrap>span { font-size: 9px; min-width: 48px; }
+    .terms-row { font-size: 10.5px; margin: 2px 0 8px; }
+    .form-message { min-height: 14px; font-size: 10px; margin: 4px 0 7px; }
+    .form-message.success, .form-message.error { padding: 7px 9px; }
+    .register-btn { height: 43px; font-size: 12px; }
+    .login-link { font-size: 11px; margin-top: 8px; }
+    .footer-note, .footer-copy { font-size: 9px; margin-top: 8px; }
+    .footer-copy { margin-top: 3px; }
+}
+
+@media (min-width: 621px) and (max-width: 1120px) and (min-height: 700px) {
+    .register-page { min-height: 100vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-panel, .form-panel { animation: none; }
+}
