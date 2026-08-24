@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // OAuth cannot complete back to a file:// page. When the app is opened
     // locally, use the deployed My-Kids-Hub origin as the OAuth callback.
-    // On HTTP/HTTPS deployments, preserve the current app origin and page.
+    // On HTTP/HTTPS deployments, preserve the current application origin.
     const getAppUrl = (page) => {
         const current = new URL(window.location.href);
         const base = current.protocol === "file:"
@@ -31,12 +31,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         return url.toString();
     };
 
-    const setOAuthButtonLoading = (button, provider) => {
+    const getOAuthError = () => {
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
+        return {
+            code: params.get("error_code") || hash.get("error_code"),
+            description: params.get("error_description") || hash.get("error_description") || params.get("error") || hash.get("error")
+        };
+    };
+
+    const setOAuthButtonLoading = (button) => {
         if (!button) return () => {};
         const original = button.innerHTML;
         button.disabled = true;
         button.setAttribute("aria-busy", "true");
-        button.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Connecting...`;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
         return () => {
             button.disabled = false;
             button.removeAttribute("aria-busy");
@@ -50,13 +60,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        const restore = setOAuthButtonLoading(button, provider);
+        const restore = setOAuthButtonLoading(button);
 
         try {
             const { error } = await window.supabaseClient.auth.signInWithOAuth({
                 provider,
                 options: {
-                    redirectTo: getAppUrl("index.html")
+                    redirectTo: getAppUrl("index.html"),
+                    queryParams: provider === "google"
+                        ? { access_type: "offline", prompt: "select_account" }
+                        : undefined
                 }
             });
 
@@ -64,7 +77,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error(`My Kids Hub ${provider} OAuth Error:`, error);
             restore();
-            alert(error?.message || `${provider} login is not available. Please use email and password.`);
+            const message = error?.message || "";
+            if (/provider.*not.*enabled|unsupported.*provider/i.test(message)) {
+                alert("Google sign-in is not enabled in Supabase yet. Enable the provider and add the OAuth redirect URL, then try again.");
+            } else if (/redirect|url configuration/i.test(message)) {
+                alert("OAuth redirect URL is not configured in Supabase. Add the My-Kids-Hub callback URL and try again.");
+            } else {
+                alert(message || "Google login is not available. Please use email and password.");
+            }
         }
     };
 
@@ -73,24 +93,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Supabase returns to this page after OAuth. Complete the existing login flow.
     const hasOAuthCallback = /(^|[?&])code=/.test(window.location.search) ||
         window.location.hash.includes("access_token=") ||
-        window.location.hash.includes("error=");
+        window.location.hash.includes("error=") ||
+        window.location.search.includes("error=");
 
     if (hasOAuthCallback && window.supabaseClient?.auth) {
         try {
+            const oauthError = getOAuthError();
+            if (oauthError.description) {
+                alert(decodeURIComponent(oauthError.description.replace(/\+/g, " ")));
+            }
+
             const { data, error } = await window.supabaseClient.auth.getSession();
             if (error) throw error;
 
             if (data?.session) {
                 window.location.replace("dashboard.html");
                 return;
-            }
-
-            if (window.location.hash.includes("error=")) {
-                const params = new URLSearchParams(window.location.hash.substring(1));
-                const description = params.get("error_description");
-                if (description) {
-                    alert(decodeURIComponent(description.replace(/\+/g, " ")));
-                }
             }
         } catch (error) {
             console.error("My Kids Hub OAuth callback error:", error);

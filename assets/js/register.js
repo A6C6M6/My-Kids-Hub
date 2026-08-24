@@ -144,9 +144,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // OAuth cannot complete back to a file:// page. When the app is opened
-    // locally, use the deployed My-Kids-Hub origin as the OAuth callback.
-    // On HTTP/HTTPS deployments, preserve the current app origin and page.
+    // OAuth callback URLs must also be added to Supabase Auth > URL Configuration.
+    // When opened locally as file://, use the deployed My-Kids-Hub page because
+    // OAuth providers cannot redirect back to a local file URL.
     const getAppUrl = (page) => {
         const current = new URL(window.location.href);
         const base = current.protocol === "file:"
@@ -157,6 +157,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         url.search = "";
         url.hash = "";
         return url.toString();
+    };
+
+    const getOAuthError = () => {
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        const hash = new URLSearchParams(url.hash.replace(/^#/, ""));
+        return {
+            code: params.get("error_code") || hash.get("error_code"),
+            description: params.get("error_description") || hash.get("error_description") || params.get("error") || hash.get("error")
+        };
     };
 
     const setOAuthButtonsLoading = (activeButton) => {
@@ -184,30 +194,47 @@ document.addEventListener("DOMContentLoaded", async () => {
             showMessage("Authentication service is not available.", "error");
             return;
         }
+
         const restore = setOAuthButtonsLoading(button);
         try {
             const { error } = await window.supabaseClient.auth.signInWithOAuth({
                 provider,
                 options: {
-                    redirectTo: getAppUrl("register.html")
+                    redirectTo: getAppUrl("register.html"),
+                    queryParams: provider === "google"
+                        ? { access_type: "offline", prompt: "select_account" }
+                        : undefined
                 }
             });
+
             if (error) throw error;
         } catch (error) {
             console.error(`My Kids Hub ${provider} OAuth Error:`, error);
             restore();
-            showMessage(error?.message || `${provider} sign-up is not available. Please use email registration.`, "error");
+            const message = error?.message || "";
+            if (/provider.*not.*enabled|unsupported.*provider/i.test(message)) {
+                showMessage(`${provider === "google" ? "Google" : "Apple"} sign-in is not enabled in Supabase yet. Enable the provider and add the OAuth redirect URL, then try again.`, "error");
+            } else if (/redirect|url configuration/i.test(message)) {
+                showMessage("OAuth redirect URL is not configured in Supabase. Add the My-Kids-Hub callback URL and try again.", "error");
+            } else {
+                showMessage(message || `${provider} sign-up is not available. Please use email registration.`, "error");
+            }
         }
     };
 
     googleSignupBtn?.addEventListener("click", () => oauthSignup("google", googleSignupBtn));
     appleSignupBtn?.addEventListener("click", () => oauthSignup("apple", appleSignupBtn));
 
-    // OAuth callback: Supabase restores the session and the provider profile is
+    // OAuth callback: Supabase restores the session and provider details are
     // used to pre-fill the existing registration form.
     let oauthSession = null;
     if (window.supabaseClient?.auth) {
         try {
+            const oauthError = getOAuthError();
+            if (oauthError.description) {
+                showMessage(decodeURIComponent(oauthError.description.replace(/\+/g, " ")), "error");
+            }
+
             const { data, error } = await window.supabaseClient.auth.getSession();
             if (error) throw error;
             const session = data?.session;
@@ -283,35 +310,50 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
             if (!oauthSession) {
-                const { error: authError } = await window.supabaseClient.auth.signUp({
+                const { data, error: authError } = await window.supabaseClient.auth.signUp({
                     email,
-                    password
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            mobile,
+                            terms_accepted: true
+                        },
+                        emailRedirectTo: getAppUrl("index.html")
+                    }
                 });
+
                 if (authError) throw authError;
-            }
 
-            const { error: insertError } = await window.supabaseClient
-                .from("users")
-                .insert([{ full_name: fullName, email: email, mobile: mobile }]);
-
-            if (insertError) {
-                console.error("My Kids Hub users insert warning:", insertError);
-                // An existing profile can occur when an OAuth user retries after
-                // returning to this page. The authenticated account remains valid.
-                if (!oauthSession || !/duplicate|unique/i.test(insertError.message || "")) {
-                    throw insertError;
+                // If email confirmation is disabled and Supabase returned a session,
+                // the trigger already created the profile. If confirmation is enabled,
+                // the trigger still creates the profile immediately from user metadata.
+                if (data?.user) {
+                    showMessage("Registration successful. Please check your email to verify your account.", "success");
                 }
-            }
+            } else {
+                // OAuth already created/authenticated the Supabase user. Update only
+                // the application profile fields collected on this registration page.
+                const { data: userData, error: userError } = await window.supabaseClient.auth.getUser();
+                if (userError) throw userError;
+                if (!userData?.user) throw new Error("Authenticated user was not found.");
 
-            showMessage(
-                oauthSession
-                    ? "Registration completed successfully. Redirecting to your dashboard..."
-                    : "Registration successful. Please check your email to verify your account.",
-                "success"
-            );
+                const { error: profileError } = await window.supabaseClient
+                    .from("profiles")
+                    .update({
+                        full_name: fullName,
+                        mobile,
+                        terms_accepted: true
+                    })
+                    .eq("id", userData.user.id);
+
+                if (profileError) throw profileError;
+
+                showMessage("Registration completed successfully. Redirecting to your dashboard...", "success");
+            }
 
             setTimeout(() => {
-                window.location.href = "index.html";
+                window.location.href = oauthSession ? "dashboard.html" : "index.html";
             }, oauthSession ? 900 : 2200);
         } catch (error) {
             console.error("My Kids Hub Registration Error:", error);
