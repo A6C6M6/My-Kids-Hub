@@ -2,7 +2,7 @@ const SUPABASE_URL =
 "https://ibsqupjmuytjxoybstdw.supabase.co";
 
 // Publishable browser key, reconstructed at runtime so this source file
-authorization does not contain a credential-like literal in plain text.
+does not contain a credential-like literal in plain text.
 const SUPABASE_ANON_KEY = atob(
     "c2JfcHVibGlzaGFibGVfRGxST1Rpd2I2dTVFaEtvNloxMnRmUV91cWhSLVJVOA=="
 );
