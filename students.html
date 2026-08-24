@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students | My-Kids-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/students.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 8 L92 40 H82 V88 H18 V40 H8 Z" fill="#ffffff"/>
+                        <rect x="28" y="50" width="44" height="38" rx="4" fill="#0056b3"/>
+                        <rect x="44" y="16" width="12" height="12" fill="#ffcc00"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>My-Kids-Hub</h1>
+                    <span>School Fee Management</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="students.html" class="nav-item active"><i class="fa-solid fa-user-graduate"></i> Students</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-people-group"></i> Parents</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-indian-rupee-sign"></i> Fee Management</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-credit-card"></i> Payments</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-chart-column"></i> Reports</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-bell"></i> Reminders</a>
+                <a href="#" class="nav-item"><i class="fa-regular fa-calendar"></i> Calendar</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
+
+            <div class="sidebar-user">
+                <div class="user-card">
+                    <div class="avatar avatar-md" style="background:#ffcc00;">AB</div>
+                    <div class="user-info">
+                        <strong>User</strong>
+                        <span>Administrator</span>
+                        <span class="status-dot"><i class="fa-solid fa-circle"></i> Online</span>
+                    </div>
+                </div>
+                <a href="index.html" class="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+                    <div>
+                        <h2>Students</h2>
+                        <p>View and manage student information.</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn bell-btn" type="button">
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+                    <div class="profile-chip">
+                        <div class="avatar avatar-sm" style="background:#0056b3;">AB</div>
+                        <div class="profile-text">
+                            <strong>User</strong>
+                            <span>Administrator</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                <section class="student-page-head">
+                    <div>
+                        <span class="page-kicker">STUDENT MANAGEMENT</span>
+                        <h1>Students</h1>
+                        <p>Manage student records connected to your My-Kids-Hub account.</p>
+                    </div>
+                    <button class="primary-btn" id="addStudentBtn" type="button">
+                        <i class="fa-solid fa-user-plus"></i> Add Student
+                    </button>
+                </section>
+
+                <section class="student-toolbar panel">
+                    <div class="student-count"><strong id="studentCount">0</strong><span>Total Students</span></div>
+                    <div class="student-tools">
+                        <button id="refreshStudentsBtn" class="secondary-btn" type="button" title="Refresh students">
+                            <i class="fa-solid fa-rotate"></i><span>Refresh</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="panel students-panel">
+                    <div id="studentMessage" class="student-message" role="status" aria-live="polite"></div>
+                    <div class="table-wrap">
+                        <table class="students-table">
+                            <thead>
+                                <tr>
+                                    <th>Admission No.</th>
+                                    <th>Student</th>
+                                    <th>Class / Division</th>
+                                    <th>School</th>
+                                    <th>Parent / Mobile</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr><td colspan="7" class="table-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading students...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="studentEmptyState" hidden>
+                        <div class="empty-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                        <h3>No students found</h3>
+                        <p>Add a student or change your search/filter.</p>
+                        <button class="primary-btn" id="emptyAddStudentBtn" type="button"><i class="fa-solid fa-user-plus"></i> Add Student</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="studentModal" hidden>
+        <div class="student-modal" role="dialog" aria-modal="true" aria-labelledby="studentModalTitle">
+            <div class="modal-head">
+                <div>
+                    <span class="page-kicker" id="studentModalKicker">NEW STUDENT</span>
+                    <h2 id="studentModalTitle">Add Student</h2>
+                </div>
+                <button class="modal-close" id="closeStudentModalBtn" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="studentForm" novalidate>
+                <input type="hidden" id="studentId">
+                <div class="form-grid">
+                    <label class="field"><span>First Name *</span><input id="firstName" name="first_name" required maxlength="100"></label>
+                    <label class="field"><span>Last Name</span><input id="lastName" name="last_name" maxlength="100"></label>
+                    <label class="field"><span>Admission Number</span><input id="admissionNumber" name="admission_number" maxlength="100"></label>
+                    <label class="field"><span>Date of Birth</span><input id="dateOfBirth" name="date_of_birth" type="date"></label>
+                    <label class="field"><span>Gender</span><select id="gender" name="gender"><option value="">Select gender</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></label>
+                    <label class="field"><span>Class</span><input id="className" name="class_name" maxlength="100"></label>
+                    <label class="field"><span>Division</span><input id="division" name="division" maxlength="50"></label>
+                    <label class="field"><span>School Name</span><input id="schoolName" name="school_name" maxlength="200"></label>
+                    <label class="field"><span>Parent Name</span><input id="parentName" name="parent_name" maxlength="150"></label>
+                    <label class="field"><span>Parent Mobile</span><input id="parentMobile" name="parent_mobile" type="tel" maxlength="30"></label>
+                    <label class="field"><span>Parent Email</span><input id="parentEmail" name="parent_email" type="email" maxlength="200"></label>
+                    <label class="field"><span>Status</span><select id="status" name="status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="left">Left</option></select></label>
+                    <label class="field field-full"><span>Address</span><textarea id="address" name="address" rows="3" maxlength="500"></textarea></label>
+                </div>
+                <div class="form-error" id="studentFormError" role="alert"></div>
+                <div class="modal-actions">
+                    <button class="secondary-btn" id="cancelStudentBtn" type="button">Cancel</button>
+                    <button class="primary-btn" id="saveStudentBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/students.js"></script>
+</body>
+</html>
