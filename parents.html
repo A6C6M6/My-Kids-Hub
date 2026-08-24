@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parents | My-Kids-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/parents.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 8 L92 40 H82 V88 H18 V40 H8 Z" fill="#ffffff"/>
+                        <rect x="28" y="50" width="44" height="38" rx="4" fill="#0056b3"/>
+                        <rect x="44" y="16" width="12" height="12" fill="#ffcc00"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>My-Kids-Hub</h1>
+                    <span>School Fee Management</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="students.html" class="nav-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+                <a href="parents.html" class="nav-item active"><i class="fa-solid fa-people-group"></i> Parents</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-indian-rupee-sign"></i> Fee Management</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-credit-card"></i> Payments</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-chart-column"></i> Reports</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-bell"></i> Reminders</a>
+                <a href="#" class="nav-item"><i class="fa-regular fa-calendar"></i> Calendar</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
+
+            <div class="sidebar-user">
+                <div class="user-card">
+                    <div class="avatar avatar-md" style="background:#ffcc00;">AB</div>
+                    <div class="user-info">
+                        <strong>User</strong>
+                        <span>Administrator</span>
+                        <span class="status-dot"><i class="fa-solid fa-circle"></i> Online</span>
+                    </div>
+                </div>
+                <a href="index.html" class="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+                    <div>
+                        <h2>Parents</h2>
+                        <p>View and manage parent information.</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn bell-btn" type="button"><i class="fa-regular fa-bell"></i></button>
+                    <div class="profile-chip">
+                        <div class="avatar avatar-sm" style="background:#0056b3;">AB</div>
+                        <div class="profile-text"><strong>User</strong><span>Administrator</span></div>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-scroll">
+                <section class="parent-page-head">
+                    <div>
+                        <span class="page-kicker">PARENT MANAGEMENT</span>
+                        <h1>Parents</h1>
+                        <p>Manage parent records and link them to students.</p>
+                    </div>
+                    <button class="primary-btn" id="addParentBtn" type="button"><i class="fa-solid fa-user-plus"></i> Add Parent</button>
+                </section>
+
+                <section class="parent-toolbar panel">
+                    <div class="parent-count"><strong id="parentCount">0</strong><span>Total Parents</span></div>
+                    <div class="parent-tools">
+                        <button id="refreshParentsBtn" class="secondary-btn" type="button" title="Refresh parents"><i class="fa-solid fa-rotate"></i><span>Refresh</span></button>
+                    </div>
+                </section>
+
+                <section class="panel parents-panel">
+                    <div id="parentMessage" class="parent-message" role="status" aria-live="polite"></div>
+                    <div class="table-wrap">
+                        <table class="parents-table">
+                            <thead>
+                                <tr>
+                                    <th>Parent</th>
+                                    <th>Relationship</th>
+                                    <th>Contact</th>
+                                    <th>Students</th>
+                                    <th>Address</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parentsTableBody">
+                                <tr><td colspan="6" class="table-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading parents...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="parentEmptyState" hidden>
+                        <div class="empty-icon"><i class="fa-solid fa-people-group"></i></div>
+                        <h3>No parents found</h3>
+                        <p>Add a parent and link them to one or more students.</p>
+                        <button class="primary-btn" id="emptyAddParentBtn" type="button"><i class="fa-solid fa-user-plus"></i> Add Parent</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="parentModal" hidden>
+        <div class="parent-modal" role="dialog" aria-modal="true" aria-labelledby="parentModalTitle">
+            <div class="modal-head">
+                <div>
+                    <span class="page-kicker" id="parentModalKicker">NEW PARENT</span>
+                    <h2 id="parentModalTitle">Add Parent</h2>
+                </div>
+                <button class="modal-close" id="closeParentModalBtn" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="parentForm" novalidate>
+                <input type="hidden" id="parentId">
+                <div class="form-grid">
+                    <label class="field field-full"><span>Full Name *</span><input id="fullName" name="full_name" required maxlength="150"></label>
+                    <label class="field"><span>Mobile</span><input id="mobile" name="mobile" type="tel" maxlength="30"></label>
+                    <label class="field"><span>Email</span><input id="email" name="email" type="email" maxlength="150"></label>
+                    <label class="field"><span>Relationship</span>
+                        <select id="relationship" name="relationship">
+                            <option value="">Select relationship</option>
+                            <option value="Father">Father</option>
+                            <option value="Mother">Mother</option>
+                            <option value="Guardian">Guardian</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </label>
+                    <label class="field"><span>Occupation</span><input id="occupation" name="occupation" maxlength="120"></label>
+                    <label class="field field-full"><span>Address</span><textarea id="address" name="address" rows="3" maxlength="500"></textarea></label>
+                    <div class="field field-full">
+                        <span>Link to Student(s)</span>
+                        <div id="studentLinkList" class="student-link-list"></div>
+                        <small class="field-help">Select the students connected to this parent. The relationship above is stored on the parent record; each selected student is linked through the existing student_parents table.</small>
+                    </div>
+                </div>
+                <div id="parentFormError" class="form-error" role="alert"></div>
+                <div class="modal-actions">
+                    <button class="secondary-btn" id="cancelParentBtn" type="button">Cancel</button>
+                    <button class="primary-btn" id="saveParentBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Parent</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/parents.js"></script>
+</body>
+</html>
