@@ -5,7 +5,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     "use strict";
 
     const APP_ORIGIN = "https://a6c6m6.github.io/My-Kids-Hub/";
-    const supabase = window.supabaseClient;
+
+    // Defensive client initialization. If the config script was skipped by a
+    // stale cache or the primary CDN was unavailable, initialize the browser
+    // client here as a fallback instead of treating auth as unavailable.
+    const ensureSupabaseClient = () => {
+        if (window.supabaseClient?.auth) return window.supabaseClient;
+        if (!window.supabase?.createClient) return null;
+
+        const SUPABASE_URL = "https://ibsqupjmuytjxoybstdw.supabase.co";
+        const SUPABASE_ANON_KEY = atob("c2JfcHVibGlzaGFibGVfRGxST1Rpd2I2dTVFaEtvNloxMnRmUV91cWhSLVJVOA==");
+
+        try {
+            window.supabaseClient = window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_ANON_KEY,
+                {
+                    auth: {
+                        persistSession: true,
+                        autoRefreshToken: true,
+                        detectSessionInUrl: false,
+                        flowType: "pkce"
+                    }
+                }
+            );
+        } catch (error) {
+            console.error("My-Kids-Hub Supabase client initialization error:", error);
+            return null;
+        }
+
+        return window.supabaseClient;
+    };
+
+    const supabase = ensureSupabaseClient();
 
     const loginForm = document.getElementById("loginForm");
     const googleLoginBtn = document.getElementById("googleLoginBtn");
