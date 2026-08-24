@@ -1,9 +1,18 @@
 // My-Kids-Hub Login + OAuth functionality
 // GitHub Pages + Supabase Auth
+
 document.addEventListener("DOMContentLoaded", async () => {
     "use strict";
 
     const APP_ORIGIN = "https://a6c6m6.github.io/My-Kids-Hub/";
+    const supabase = window.supabaseClient;
+
+    const loginForm = document.getElementById("loginForm");
+    const googleLoginBtn = document.getElementById("googleLoginBtn");
+    const togglePassword = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
+
+    let redirecting = false;
 
     const getAppUrl = (page = "index.html") => {
         const url = new URL(page, APP_ORIGIN);
@@ -12,16 +21,49 @@ document.addEventListener("DOMContentLoaded", async () => {
         return url.toString();
     };
 
-    const supabase = window.supabaseClient;
+    const goToDashboard = () => {
+        if (redirecting) return;
+        redirecting = true;
+        window.location.replace(getAppUrl("dashboard.html"));
+    };
 
-    const loginForm = document.getElementById("loginForm");
-    const googleLoginBtn = document.getElementById("googleLoginBtn");
-    const togglePassword = document.getElementById("togglePassword");
-    const password = document.getElementById("password");
+    const cleanOAuthUrl = () => {
+        window.history.replaceState({}, document.title, getAppUrl("index.html"));
+    };
 
-    // ------------------------------------------------------------
+    const hasOAuthCallback = () => {
+        const hash = window.location.hash || "";
+        const search = new URLSearchParams(window.location.search);
+
+        return (
+            search.has("code") ||
+            hash.includes("access_token=") ||
+            hash.includes("refresh_token=")
+        );
+    };
+
+    const waitForSession = async (timeoutMs = 15000) => {
+        if (!supabase?.auth) return null;
+
+        const started = Date.now();
+
+        while (Date.now() - started < timeoutMs) {
+            try {
+                const { data, error } = await supabase.auth.getSession();
+
+                if (!error && data?.session) return data.session;
+                if (error) console.warn("My-Kids-Hub getSession:", error);
+            } catch (error) {
+                console.warn("My-Kids-Hub getSession retry:", error);
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 300));
+        }
+
+        return null;
+    };
+
     // Password show / hide
-    // ------------------------------------------------------------
     if (togglePassword && password) {
         togglePassword.addEventListener("click", () => {
             const isPassword = password.type === "password";
@@ -31,35 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // ------------------------------------------------------------
-    // Navigation
-    // ------------------------------------------------------------
-    const goToDashboard = () => {
-        window.location.replace(getAppUrl("dashboard.html"));
-    };
-
-    const cleanOAuthUrl = () => {
-        window.history.replaceState(
-            {},
-            document.title,
-            getAppUrl("index.html")
-        );
-    };
-
-    const hasOAuthCallback = () => {
-        const hash = window.location.hash || "";
-        const search = new URLSearchParams(window.location.search);
-
-        return (
-            hash.includes("access_token=") ||
-            hash.includes("refresh_token=") ||
-            search.has("code")
-        );
-    };
-
-    // ------------------------------------------------------------
-    // OAuth button loading
-    // ------------------------------------------------------------
     const setOAuthButtonLoading = (button) => {
         if (!button) return () => {};
 
@@ -76,52 +89,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     };
 
-    // ------------------------------------------------------------
-    // Wait for Supabase to finish processing an OAuth callback.
+    // OAuth callback handler.
+    // New callbacks use PKCE (?code=...). Supabase is configured with
+    // detectSessionInUrl:true, so it automatically completes the code
+    // exchange and persists the session. We do not call
+    // exchangeCodeForSession() here because that can race with the
+    // client's automatic callback processing.
     //
-    // IMPORTANT:
-    // Do NOT call setSession() on an access_token returned by
-    // Supabase when detectSessionInUrl is enabled. Supabase itself
-    // consumes the URL callback and persists the session.
-    // ------------------------------------------------------------
-    const waitForSession = async (timeoutMs = 12000) => {
-        if (!supabase?.auth) return null;
-
-        const started = Date.now();
-
-        while (Date.now() - started < timeoutMs) {
-            try {
-                const { data, error } = await supabase.auth.getSession();
-
-                if (!error && data?.session) {
-                    return data.session;
-                }
-            } catch (error) {
-                console.warn("My-Kids-Hub getSession retry:", error);
-            }
-
-            await new Promise((resolve) => setTimeout(resolve, 250));
-        }
-
-        return null;
-    };
-
-    // ------------------------------------------------------------
-    // OAuth callback handler
-    // ------------------------------------------------------------
+    // A legacy implicit-flow fallback is retained for an old tab that
+    // still returns #access_token=... from the previous deployment.
     const handleOAuthCallback = async () => {
         if (!supabase?.auth) return false;
 
-        const hash = window.location.hash || "";
         const search = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(
+            (window.location.hash || "").replace(/^#/, "")
+        );
 
-        // PKCE callback: ?code=...
-        const code = search.get("code");
+        const hasCode = search.has("code");
+        const accessToken = hashParams.get("access_token");
+        const refreshToken = hashParams.get("refresh_token");
 
-        if (code) {
+        if (!hasCode && !accessToken && !refreshToken) return false;
+
+        // Give Supabase Auth time to finish its automatic initialization.
+        const session = await waitForSession(15000);
+
+        if (session) {
+            cleanOAuthUrl();
+            goToDashboard();
+            return true;
+        }
+
+        // Legacy implicit-flow fallback.
+        if (accessToken && refreshToken) {
             try {
-                const { data, error } =
-                    await supabase.auth.exchangeCodeForSession(code);
+                const { data, error } = await supabase.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                });
 
                 if (error) throw error;
 
@@ -130,71 +136,31 @@ document.addEventListener("DOMContentLoaded", async () => {
                     goToDashboard();
                     return true;
                 }
-
-                const session = await waitForSession();
-
-                if (session) {
-                    cleanOAuthUrl();
-                    goToDashboard();
-                    return true;
-                }
-
-                alert(
-                    "Google login succeeded, but the Supabase session could not be created. Please try again."
-                );
-                return true;
             } catch (error) {
-                console.error(
-                    "My-Kids-Hub OAuth code exchange error:",
-                    error
-                );
-
+                console.error("My-Kids-Hub legacy OAuth session error:", error);
                 alert(
                     error?.message ||
-                    "Google login failed. Please try again."
+                    "Google login failed while creating the session. Please start the login again."
                 );
-
                 return true;
             }
         }
 
-        // Implicit callback: #access_token=...
-        if (
-            hash.includes("access_token=") ||
-            hash.includes("refresh_token=")
-        ) {
-            // Supabase Auth processes this callback automatically when
-            // createClient() is initialized with detectSessionInUrl:true.
-            const session = await waitForSession();
+        console.error(
+            "My-Kids-Hub: OAuth callback was received, but no Supabase session was created."
+        );
 
-            if (session) {
-                cleanOAuthUrl();
-                goToDashboard();
-                return true;
-            }
+        alert(
+            "Google login completed, but the Supabase session was not created. Please start Google login again."
+        );
 
-            console.error(
-                "My-Kids-Hub: OAuth tokens were returned, but no session was restored."
-            );
-
-            alert(
-                "Google login succeeded, but the Supabase session could not be created. Please try again."
-            );
-
-            return true;
-        }
-
-        return false;
+        return true;
     };
 
-    // ------------------------------------------------------------
     // Google login
-    // ------------------------------------------------------------
     const loginWithOAuth = async (provider, button) => {
         if (!supabase?.auth) {
-            alert(
-                "Authentication service is not available. Please try again later."
-            );
+            alert("Authentication service is not available. Please try again later.");
             return;
         }
 
@@ -222,23 +188,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const message = error?.message || "";
 
-            if (
-                /provider.*not.*enabled|unsupported.*provider/i.test(
-                    message
-                )
-            ) {
+            if (/provider.*not.*enabled|unsupported.*provider/i.test(message)) {
                 alert("Google sign-in is not enabled in Supabase.");
-            } else if (
-                /redirect|url configuration|redirect_to/i.test(message)
-            ) {
-                alert(
-                    "OAuth redirect URL is not configured correctly in Supabase."
-                );
+            } else if (/redirect|url configuration|redirect_to/i.test(message)) {
+                alert("OAuth redirect URL is not configured correctly in Supabase.");
             } else {
-                alert(
-                    message ||
-                    "Google login failed. Please try again."
-                );
+                alert(message || "Google login failed. Please try again.");
             }
         }
     };
@@ -249,20 +204,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // ------------------------------------------------------------
-    // AUTH INITIALIZATION
-    // ------------------------------------------------------------
     if (supabase?.auth) {
-        let callbackHandled = false;
-
-        // First handle callback already present in the URL.
-        if (hasOAuthCallback()) {
-            callbackHandled = await handleOAuthCallback();
-
-            if (callbackHandled) return;
-        }
-
-        // Listen for normal Supabase auth events.
+        // Register immediately so the post-redirect event is not missed.
         supabase.auth.onAuthStateChange((event, session) => {
             console.log(
                 "My-Kids-Hub Auth Event:",
@@ -271,20 +214,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
 
             if (
-                (event === "SIGNED_IN" ||
-                    event === "INITIAL_SESSION") &&
-                session
+                (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
+                session &&
+                !redirecting
             ) {
-                // If an OAuth callback was present, remove tokens/code.
-                if (hasOAuthCallback()) {
-                    cleanOAuthUrl();
-                }
-
+                if (hasOAuthCallback()) cleanOAuthUrl();
                 goToDashboard();
             }
         });
 
-        // Final session check for normal email login / remembered session.
+        if (hasOAuthCallback()) {
+            const callbackHandled = await handleOAuthCallback();
+            if (callbackHandled) return;
+        }
+
         try {
             const { data, error } = await supabase.auth.getSession();
 
@@ -293,16 +236,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
         } catch (error) {
-            console.error(
-                "My-Kids-Hub session check error:",
-                error
-            );
+            console.error("My-Kids-Hub session check error:", error);
         }
     }
 
-    // ------------------------------------------------------------
     // Email + password login
-    // ------------------------------------------------------------
     if (loginForm) {
         loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -322,49 +260,31 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const originalContent = btn.innerHTML;
-
-            btn.innerHTML =
-                '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             btn.disabled = true;
 
             try {
                 if (!supabase?.auth) {
-                    throw new Error(
-                        "Authentication service is not available."
-                    );
+                    throw new Error("Authentication service is not available.");
                 }
 
-                const { data, error } =
-                    await supabase.auth.signInWithPassword({
-                        email,
-                        password: pass
-                    });
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password: pass
+                });
 
                 if (error) throw error;
 
                 if (data?.session) {
-                    console.log(
-                        "My-Kids-Hub: Email login successful."
-                    );
-
+                    console.log("My-Kids-Hub: Email login successful.");
                     goToDashboard();
                     return;
                 }
 
-                throw new Error(
-                    "Authentication session was not created."
-                );
+                throw new Error("Authentication session was not created.");
             } catch (error) {
-                console.error(
-                    "My-Kids-Hub Login Error:",
-                    error
-                );
-
-                alert(
-                    error?.message ||
-                    "Invalid email or password. Please try again."
-                );
-
+                console.error("My-Kids-Hub Login Error:", error);
+                alert(error?.message || "Invalid email or password. Please try again.");
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
             }
