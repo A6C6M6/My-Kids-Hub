@@ -6,7 +6,13 @@ const SUPABASE_ANON_KEY =
 
 /*
  * Global Supabase client.
- * Explicit Auth settings are used for GitHub Pages OAuth.
+ *
+ * Explicit auth settings are important for GitHub Pages OAuth:
+ * - persistSession keeps the login across page navigation.
+ * - autoRefreshToken refreshes the session automatically.
+ * - detectSessionInUrl lets Supabase process the OAuth callback.
+ * - flowType "implicit" matches the #access_token callback used
+ *   by the current Google OAuth flow.
  */
 window.supabaseClient =
     window.supabase.createClient(
