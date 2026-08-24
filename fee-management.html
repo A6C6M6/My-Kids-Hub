@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Management | My-Kids-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/fee-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 8 L92 40 H82 V88 H18 V40 H8 Z" fill="#ffffff"/><rect x="28" y="50" width="44" height="38" rx="4" fill="#0056b3"/><rect x="44" y="16" width="12" height="12" fill="#ffcc00"/></svg></div>
+            <div class="logo-text"><h1>My-Kids-Hub</h1><span>School Fee Management</span></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="students.html" class="nav-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+            <a href="parents.html" class="nav-item"><i class="fa-solid fa-people-group"></i> Parents</a>
+            <a href="fee-management.html" class="nav-item active"><i class="fa-solid fa-indian-rupee-sign"></i> Fee Management</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-credit-card"></i> Payments</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-chart-column"></i> Reports</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-bell"></i> Reminders</a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-calendar"></i> Calendar</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-card"><div class="avatar avatar-md" style="background:#ffcc00;">AB</div><div class="user-info"><strong>User</strong><span>Administrator</span><span class="status-dot"><i class="fa-solid fa-circle"></i> Online</span></div></div>
+            <a href="index.html" class="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
+                <div><h2>Fee Management</h2><p>Create fee structures and assign fees to students.</p></div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn bell-btn" type="button"><i class="fa-regular fa-bell"></i></button>
+                <div class="profile-chip"><div class="avatar avatar-sm" style="background:#0056b3;">AB</div><div class="profile-text"><strong>User</strong><span>Administrator</span></div><i class="fa-solid fa-chevron-down"></i></div>
+            </div>
+        </header>
+
+        <div class="content-scroll">
+            <section class="fee-page-head">
+                <div><span class="page-kicker">FEE MANAGEMENT</span><h1>Fee Management</h1><p>Manage fee structures and assign fees to your students.</p></div>
+                <div class="head-actions"><button class="secondary-btn" id="refreshFeesBtn" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button><button class="primary-btn" id="addStructureBtn" type="button"><i class="fa-solid fa-plus"></i> Create Fee Structure</button></div>
+            </section>
+
+            <div id="feeMessage" class="fee-message" role="status" aria-live="polite"></div>
+
+            <section class="fee-stats">
+                <div class="panel fee-stat"><span>Fee Structures</span><strong id="structureCount">0</strong></div>
+                <div class="panel fee-stat"><span>Active Structures</span><strong id="activeStructureCount">0</strong></div>
+                <div class="panel fee-stat"><span>Assigned Fees</span><strong id="assignedFeeCount">0</strong></div>
+                <div class="panel fee-stat"><span>Pending Amount</span><strong id="pendingAmount">₹ 0.00</strong></div>
+            </section>
+
+            <section class="panel fee-panel">
+                <div class="section-head"><div><h2>Fee Structures</h2><p>Class-wise tuition, transport, admission and other fee structures.</p></div></div>
+                <div class="table-wrap">
+                    <table class="fee-table">
+                        <thead><tr><th>Fee Name</th><th>Class</th><th>Amount</th><th>Frequency</th><th>Academic Year</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="structuresTableBody"><tr><td colspan="8" class="table-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading fee structures...</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="structureEmptyState" hidden><div class="empty-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div><h3>No fee structures found</h3><p>Create a fee structure to start managing fees.</p><button class="primary-btn" id="emptyAddStructureBtn" type="button"><i class="fa-solid fa-plus"></i> Create Fee Structure</button></div>
+            </section>
+
+            <section class="panel fee-panel assigned-panel">
+                <div class="section-head"><div><h2>Assigned Student Fees</h2><p>Assign a fee structure to an individual student and manage the amount, discount, due date and status.</p></div><button class="primary-btn" id="assignFeeBtn" type="button"><i class="fa-solid fa-user-plus"></i> Assign Fee</button></div>
+                <div class="assignment-filters"><label class="filter-field"><span>Student</span><select id="studentFilter"><option value="">All Students</option></select></label><label class="filter-field"><span>Status</span><select id="statusFilter"><option value="">All Statuses</option><option value="pending">Pending</option><option value="partially_paid">Partially Paid</option><option value="paid">Paid</option><option value="overdue">Overdue</option><option value="cancelled">Cancelled</option></select></label></div>
+                <div class="table-wrap">
+                    <table class="fee-table assigned-table">
+                        <thead><tr><th>Student</th><th>Fee</th><th>Amount</th><th>Discount</th><th>Final Amount</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="assignedFeesTableBody"><tr><td colspan="8" class="table-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading assigned fees...</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="assignedEmptyState" hidden><div class="empty-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div><h3>No assigned fees found</h3><p>Assign a fee structure to a student to see it here.</p><button class="primary-btn" id="emptyAssignFeeBtn" type="button"><i class="fa-solid fa-user-plus"></i> Assign Fee</button></div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="structureModal" hidden>
+    <div class="fee-modal" role="dialog" aria-modal="true" aria-labelledby="structureModalTitle">
+        <div class="modal-head"><div><span class="page-kicker" id="structureModalKicker">NEW FEE STRUCTURE</span><h2 id="structureModalTitle">Create Fee Structure</h2></div><button class="modal-close" id="closeStructureModalBtn" type="button"><i class="fa-solid fa-xmark"></i></button></div>
+        <form id="structureForm" novalidate><input type="hidden" id="structureId"><div class="form-grid">
+            <label class="field"><span>Fee Name *</span><input id="feeName" maxlength="150" required placeholder="Tuition Fee"></label>
+            <label class="field"><span>Class</span><input id="feeClass" maxlength="100" placeholder="Class 5"></label>
+            <label class="field"><span>Amount *</span><input id="feeAmount" type="number" min="0" step="0.01" required placeholder="0.00"></label>
+            <label class="field"><span>Frequency</span><select id="feeFrequency"><option value="one_time">One Time</option><option value="monthly">Monthly</option><option value="quarterly">Quarterly</option><option value="half_yearly">Half Yearly</option><option value="yearly">Yearly</option></select></label>
+            <label class="field"><span>Academic Year</span><input id="academicYear" maxlength="30" placeholder="2024-25"></label>
+            <label class="field"><span>Due Date</span><input id="structureDueDate" type="date"></label>
+            <label class="field field-full"><span>Description</span><textarea id="feeDescription" rows="3" maxlength="500" placeholder="Optional fee details"></textarea></label>
+            <label class="field checkbox-field field-full"><input id="feeActive" type="checkbox" checked><span>Active fee structure</span></label>
+        </div><div class="form-error" id="structureFormError"></div><div class="modal-actions"><button class="secondary-btn" id="cancelStructureBtn" type="button">Cancel</button><button class="primary-btn" id="saveStructureBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Structure</button></div></form>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="assignmentModal" hidden>
+    <div class="fee-modal" role="dialog" aria-modal="true" aria-labelledby="assignmentModalTitle">
+        <div class="modal-head"><div><span class="page-kicker" id="assignmentModalKicker">NEW ASSIGNMENT</span><h2 id="assignmentModalTitle">Assign Fee</h2></div><button class="modal-close" id="closeAssignmentModalBtn" type="button"><i class="fa-solid fa-xmark"></i></button></div>
+        <form id="assignmentForm" novalidate><input type="hidden" id="studentFeeId"><div class="form-grid">
+            <label class="field"><span>Student *</span><select id="assignmentStudent" required></select></label>
+            <label class="field"><span>Fee Structure *</span><select id="assignmentStructure" required></select></label>
+            <label class="field"><span>Fee Name *</span><input id="assignmentFeeName" maxlength="150" required></label>
+            <label class="field"><span>Amount *</span><input id="assignmentAmount" type="number" min="0" step="0.01" required></label>
+            <label class="field"><span>Discount</span><input id="assignmentDiscount" type="number" min="0" step="0.01" value="0"></label>
+            <label class="field"><span>Due Date</span><input id="assignmentDueDate" type="date"></label>
+            <label class="field"><span>Academic Year</span><input id="assignmentAcademicYear" maxlength="30"></label>
+            <label class="field"><span>Status</span><select id="assignmentStatus"><option value="pending">Pending</option><option value="partially_paid">Partially Paid</option><option value="paid">Paid</option><option value="overdue">Overdue</option><option value="cancelled">Cancelled</option></select></label>
+        </div><p class="field-help">Selecting a fee structure fills the fee name, amount, due date and academic year. You can adjust the assigned amount or discount before saving.</p><div class="form-error" id="assignmentFormError"></div><div class="modal-actions"><button class="secondary-btn" id="cancelAssignmentBtn" type="button">Cancel</button><button class="primary-btn" id="saveAssignmentBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Assignment</button></div></form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/fee-management.js"></script>
+</body>
+</html>
