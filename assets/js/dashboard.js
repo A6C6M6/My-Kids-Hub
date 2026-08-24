@@ -1,54 +1,154 @@
-// Shared Agri Tracker authentication guard and profile binding.
-document.addEventListener("DOMContentLoaded", async () => {
-    if (!window.supabaseClient) {
-        window.location.href = "index.html";
-        return;
-    }
+// My-Kids-Hub Dashboard authentication + profile binding.
+// This page must work independently from index.html on GitHub Pages.
 
-    try {
-        const { data, error } = await window.supabaseClient.auth.getUser();
-        if (error || !data || !data.user) {
-            window.location.href = "index.html";
+(async () => {
+    "use strict";
+
+    const SUPABASE_URL = "https://ibsqupjmuytjxoybstdw.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_4wk7hLvO7ZYE5Xo2j-K1Iw_ja4Pu5RZ";
+
+    // dashboard.html historically did not load supabase-config.js.
+    // Initialize the Supabase browser client here as a safe fallback so
+    // navigation to dashboard.html never immediately sends the user back
+    // to index.html just because window.supabaseClient is missing.
+    const loadSupabaseLibrary = () => new Promise((resolve, reject) => {
+        if (window.supabase) {
+            resolve();
             return;
         }
 
-        const user = data.user;
-        const email = user.email || "User";
-        const displayName = user.user_metadata?.full_name || email;
-        const initials = displayName.trim().slice(0, 2).toUpperCase();
-
-        document.querySelectorAll(".user-info strong, .profile-text strong").forEach(el => {
-            el.textContent = displayName;
-        });
-        document.querySelectorAll(".avatar").forEach(el => {
-            el.textContent = initials;
-        });
-
-        const subtitle = document.querySelector(".topbar-left p");
-        if (subtitle) {
-            subtitle.textContent = `Welcome back, ${displayName}! Here's what's happening today.`;
+        const existing = document.querySelector('script[data-mykidshub-supabase]');
+        if (existing) {
+            existing.addEventListener("load", resolve, { once: true });
+            existing.addEventListener("error", reject, { once: true });
+            return;
         }
 
-        document.querySelectorAll(".logout-btn").forEach(btn => {
-            btn.addEventListener("click", async (event) => {
-                event.preventDefault();
-                try {
-                    await window.supabaseClient.auth.signOut();
-                } finally {
-                    window.location.href = "index.html";
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+        script.async = false;
+        script.dataset.mykidshubSupabase = "true";
+        script.onload = resolve;
+        script.onerror = () => reject(new Error("Supabase library could not be loaded."));
+        document.head.appendChild(script);
+    });
+
+    const ensureSupabaseClient = async () => {
+        if (window.supabaseClient?.auth) return window.supabaseClient;
+
+        await loadSupabaseLibrary();
+
+        if (!window.supabase?.createClient) {
+            throw new Error("Supabase client library is unavailable.");
+        }
+
+        window.supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY,
+            {
+                auth: {
+                    persistSession: true,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true,
+                    flowType: "pkce"
                 }
+            }
+        );
+
+        return window.supabaseClient;
+    };
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const getValidSession = async (client, timeoutMs = 10000) => {
+        const started = Date.now();
+
+        while (Date.now() - started < timeoutMs) {
+            try {
+                const { data, error } = await client.auth.getSession();
+                if (!error && data?.session) return data.session;
+            } catch (error) {
+                console.warn("My-Kids-Hub dashboard session retry:", error);
+            }
+
+            await sleep(250);
+        }
+
+        return null;
+    };
+
+    const redirectToLogin = () => {
+        // Prevent an endless redirect loop while preserving GitHub Pages path.
+        if (!window.location.pathname.endsWith("/dashboard.html")) return;
+        window.location.replace("index.html");
+    };
+
+    const initializeDashboardAuth = async () => {
+        let client;
+
+        try {
+            client = await ensureSupabaseClient();
+
+            // First allow Supabase Auth to finish restoring the persisted
+            // session from localStorage, then read the session.
+            const session = await getValidSession(client, 10000);
+
+            if (!session?.user) {
+                console.warn("My-Kids-Hub dashboard: no authenticated session found.");
+                redirectToLogin();
+                return;
+            }
+
+            const user = session.user;
+            const email = user.email || "User";
+            const displayName =
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                email;
+            const initials = displayName.trim().slice(0, 2).toUpperCase();
+
+            document.querySelectorAll(".user-info strong, .profile-text strong").forEach(el => {
+                el.textContent = displayName;
             });
-        });
-    } catch (error) {
-        console.error("My Kids Hub session check failed:", error);
-        window.location.href = "index.html";
+
+            document.querySelectorAll(".avatar").forEach(el => {
+                el.textContent = initials;
+            });
+
+            const subtitle = document.querySelector(".topbar-left p");
+            if (subtitle) {
+                subtitle.textContent = `Welcome back, ${displayName}! Here's what's happening today.`;
+            }
+
+            document.querySelectorAll(".logout-btn").forEach(btn => {
+                btn.addEventListener("click", async (event) => {
+                    event.preventDefault();
+                    try {
+                        await client.auth.signOut();
+                    } finally {
+                        window.location.replace("index.html");
+                    }
+                });
+            });
+        } catch (error) {
+            console.error("My-Kids-Hub dashboard authentication failed:", error);
+            alert("Unable to restore your login session. Please sign in again.");
+            redirectToLogin();
+        }
+    };
+
+    // Run auth initialization after the DOM exists.
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeDashboardAuth, { once: true });
+    } else {
+        initializeDashboardAuth();
     }
-});
+})();
 
 // Sidebar toggle (mobile)
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menuToggle');
-if (menuToggle) {
+if (menuToggle && sidebar) {
     menuToggle.addEventListener('click', () => {
         sidebar.classList.toggle('open');
     });
