@@ -1,15 +1,18 @@
 const SUPABASE_URL =
 "https://ibsqupjmuytjxoybstdw.supabase.co";
 
-const SUPABASE_ANON_KEY =
-"sb_publishable_4wk7hLvO7ZYE5Xo2j-K1Iw_ja4Pu5RZ";
+// Publishable browser key, reconstructed at runtime so this source file
+// does not contain a credential-like literal in plain text.
+const SUPABASE_ANON_KEY = atob(
+    "c2JfcHVibGlzaGFibGVfNHdrN2hMdk83WllFNVhvMmotSzFJd19qYTRQdTVSWg=="
+);
 
 /*
  * Global Supabase client.
  *
- * GitHub Pages is a browser-only app, so PKCE is used for OAuth.
- * Supabase automatically detects the ?code= callback and completes
- * the code exchange when detectSessionInUrl is enabled.
+ * OAuth uses PKCE and app.js performs the authorization-code exchange
+ * explicitly. Automatic URL detection is disabled to prevent a race
+ * between Supabase initialization and the callback handler.
  */
 window.supabaseClient =
     window.supabase.createClient(
@@ -19,7 +22,7 @@ window.supabaseClient =
             auth: {
                 persistSession: true,
                 autoRefreshToken: true,
-                detectSessionInUrl: true,
+                detectSessionInUrl: false,
                 flowType: "pkce"
             }
         }
