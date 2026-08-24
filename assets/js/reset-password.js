@@ -179,8 +179,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        // Allow Supabase's URL/session processing to complete before checking the session.
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // The shared client uses PKCE with detectSessionInUrl disabled, so a
+        // password-recovery authorization code must be exchanged explicitly.
+        const recoveryCode = query.get("code");
+
+        if (recoveryCode) {
+            const { error: exchangeError } =
+                await window.supabaseClient.auth.exchangeCodeForSession(recoveryCode);
+
+            if (exchangeError) throw exchangeError;
+
+            query.delete("code");
+            query.delete("state");
+            query.delete("error");
+            query.delete("error_code");
+            query.delete("error_description");
+            window.history.replaceState({}, document.title, url.toString());
+        } else if (hash.get("access_token") && hash.get("refresh_token")) {
+            // Backward-compatible support for legacy implicit-flow recovery links.
+            const { error: sessionError } = await window.supabaseClient.auth.setSession({
+                access_token: hash.get("access_token"),
+                refresh_token: hash.get("refresh_token")
+            });
+
+            if (sessionError) throw sessionError;
+
+            window.history.replaceState({}, document.title, `${url.pathname}${url.search}`);
+        }
+
         const { data, error } = await window.supabaseClient.auth.getSession();
         if (error) throw error;
         if (!data?.session) {

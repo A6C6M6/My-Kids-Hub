@@ -225,14 +225,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     googleSignupBtn?.addEventListener("click", () => oauthSignup("google", googleSignupBtn));
     appleSignupBtn?.addEventListener("click", () => oauthSignup("apple", appleSignupBtn));
 
-    // OAuth callback: Supabase restores the session and provider details are
-    // used to pre-fill the existing registration form.
+    // OAuth callback: with PKCE and detectSessionInUrl disabled in the shared
+    // Supabase client, explicitly exchange the returned authorization code
+    // before reading the authenticated session.
     let oauthSession = null;
     if (window.supabaseClient?.auth) {
         try {
             const oauthError = getOAuthError();
             if (oauthError.description) {
                 showMessage(decodeURIComponent(oauthError.description.replace(/\+/g, " ")), "error");
+            }
+
+            const callbackUrl = new URL(window.location.href);
+            const oauthCode = callbackUrl.searchParams.get("code");
+
+            if (oauthCode) {
+                const { data: exchangedData, error: exchangeError } =
+                    await window.supabaseClient.auth.exchangeCodeForSession(oauthCode);
+
+                if (exchangeError) throw exchangeError;
+
+                callbackUrl.searchParams.delete("code");
+                callbackUrl.searchParams.delete("state");
+                callbackUrl.searchParams.delete("error");
+                callbackUrl.searchParams.delete("error_code");
+                callbackUrl.searchParams.delete("error_description");
+                window.history.replaceState({}, document.title, callbackUrl.toString());
             }
 
             const { data, error } = await window.supabaseClient.auth.getSession();
