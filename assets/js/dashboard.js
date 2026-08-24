@@ -5,7 +5,7 @@
     "use strict";
 
     const SUPABASE_URL = "https://ibsqupjmuytjxoybstdw.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_4wk7hLvO7ZYE5Xo2j-K1Iw_ja4Pu5RZ";
+    const SUPABASE_ANON_KEY = "sb_publishable_DlROTiwb6u5EhKo6Z12tfQ_uqhR-RU8";
 
     // dashboard.html historically did not load supabase-config.js.
     // Initialize the Supabase browser client here as a safe fallback so
