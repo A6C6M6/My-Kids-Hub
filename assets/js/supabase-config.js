@@ -7,12 +7,9 @@ const SUPABASE_ANON_KEY =
 /*
  * Global Supabase client.
  *
- * Explicit auth settings are important for GitHub Pages OAuth:
- * - persistSession keeps the login across page navigation.
- * - autoRefreshToken refreshes the session automatically.
- * - detectSessionInUrl lets Supabase process the OAuth callback.
- * - flowType "implicit" matches the #access_token callback used
- *   by the current Google OAuth flow.
+ * GitHub Pages is a browser-only app, so PKCE is used for OAuth.
+ * Supabase automatically detects the ?code= callback and completes
+ * the code exchange when detectSessionInUrl is enabled.
  */
 window.supabaseClient =
     window.supabase.createClient(
@@ -23,7 +20,7 @@ window.supabaseClient =
                 persistSession: true,
                 autoRefreshToken: true,
                 detectSessionInUrl: true,
-                flowType: "implicit"
+                flowType: "pkce"
             }
         }
     );
