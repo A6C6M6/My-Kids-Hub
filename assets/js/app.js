@@ -16,16 +16,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const loginForm = document.getElementById("loginForm");
     const googleLoginBtn = document.getElementById("googleLoginBtn");
 
-    // OAuth cannot complete back to a file:// page. When the app is opened
-    // locally, use the deployed My-Kids-Hub origin as the OAuth callback.
-    // On HTTP/HTTPS deployments, preserve the current application origin.
-    const getAppUrl = (page) => {
-        const current = new URL(window.location.href);
-        const base = current.protocol === "file:"
-            ? "https://a6c6m6.github.io/My-Kids-Hub/"
-            : current.href;
-        const url = new URL(base);
-        url.pathname = url.pathname.replace(/[^/]*$/, page);
+    // Google/Supabase OAuth must return to a URL that is actually reachable.
+    // Always use the deployed GitHub Pages application URL so OAuth does not
+    // redirect to localhost:3000 when the project is tested from a local server.
+    const APP_ORIGIN = "https://a6c6m6.github.io/My-Kids-Hub/";
+
+    const getAppUrl = (page = "index.html") => {
+        const url = new URL(page, APP_ORIGIN);
         url.search = "";
         url.hash = "";
         return url.toString();
@@ -90,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     googleLoginBtn?.addEventListener("click", () => loginWithOAuth("google", googleLoginBtn));
 
-    // Supabase returns to this page after OAuth. Complete the existing login flow.
+    // Supabase returns to the GitHub Pages index page after OAuth.
     const hasOAuthCallback = /(^|[?&])code=/.test(window.location.search) ||
         window.location.hash.includes("access_token=") ||
         window.location.hash.includes("error=") ||
