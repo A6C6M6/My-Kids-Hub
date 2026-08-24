@@ -118,8 +118,14 @@
         </div>
     </div>
 
+    <!-- Primary Supabase SDK. A second CDN is used only when the primary failed. -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="assets/js/supabase-config.js?v=20260824-4"></script>
-    <script src="assets/js/app.js?v=20260824-4"></script>
+    <script>
+        if (!window.supabase) {
+            document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\\/script>');
+        }
+    </script>
+    <script src="assets/js/supabase-config.js?v=20260824-5"></script>
+    <script src="assets/js/app.js?v=20260824-5"></script>
 </body>
 </html>
