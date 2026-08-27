@@ -195,6 +195,11 @@
 
     const getOutstandingFee = (fee, paidByFee) => Math.max(Number(fee.final_amount ?? Number(fee.amount || 0) - Number(fee.discount_amount || 0)) - (paidByFee.get(fee.id) || 0), 0);
 
+    const markLoaded = (id) => {
+        const el = $(id);
+        if (el) { el.classList.remove("loading-list", "loading-calendar"); el.removeAttribute("aria-busy"); }
+    };
+
     const renderSummaryCards = () => {
         const paidByFee = getPaidByFee();
         const totalDue = state.studentFees.reduce((sum, fee) => sum + getOutstandingFee(fee, paidByFee), 0);
@@ -222,6 +227,7 @@
     const renderUpcomingDue = () => {
         const list = $("upcomingDueList");
         if (!list) return;
+        markLoaded("upcomingDueList");
         const paidByFee = getPaidByFee();
         const today = parseDate(dateKey(new Date()));
         const sevenDays = new Date(today);
@@ -263,6 +269,7 @@
     const renderRecentPayments = () => {
         const list = $("recentPaymentsList");
         if (!list) return;
+        markLoaded("recentPaymentsList");
         const studentsMap = new Map(state.students.map(student => [student.id, student]));
         const feeMap = new Map(state.studentFees.map(fee => [fee.id, fee]));
         const rows = [...state.payments]
@@ -296,6 +303,7 @@
         const body = $("dashboardCalendarBody");
         const title = $("dashboardCalendarTitle");
         if (!body || !title) return;
+        markLoaded("dashboardCalendarBody");
         const year = state.calendarCursor.getFullYear();
         const month = state.calendarCursor.getMonth();
         title.textContent = state.calendarCursor.toLocaleDateString("en-IN", { month: "long", year: "numeric" });
@@ -330,6 +338,7 @@
     const renderUpcomingEvents = () => {
         const list = $("dashboardUpcomingEvents");
         if (!list) return;
+        markLoaded("dashboardUpcomingEvents");
         const paidByFee = getPaidByFee();
         const today = parseDate(dateKey(new Date()));
         const limit = new Date(today);
@@ -403,6 +412,8 @@
             feeDonutInstance = new Chart(donutCtx, { type: "doughnut", data: { labels: groups.map(g => g.label), datasets: [{ data: total ? totals : [1, 0, 0, 0], backgroundColor: ["#1f6fd6", "#24a866", "#f2a91d", "#8b6cf2"], borderWidth: 0, hoverOffset: 4 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: "68%", plugins: { legend: { display: false } } } });
             const legend = $("feeLegend");
             if (legend) {
+                legend.classList.remove("loading-list");
+                legend.removeAttribute("aria-busy");
                 legend.innerHTML = groups.map((group, index) => {
                     const percent = total ? Math.round((totals[index] / total) * 100) : 0;
                     const dot = ["dot-blue", "dot-green", "dot-amber", "dot-purple"][index];
@@ -415,6 +426,7 @@
     const renderRecentReminders = () => {
         const list = $("recentRemindersList");
         if (!list) return;
+        markLoaded("recentRemindersList");
         const studentsMap = new Map(state.students.map(student => [student.id, student]));
         const feeMap = new Map(state.studentFees.map(fee => [fee.id, fee]));
         const rows = [...state.reminders].sort((a, b) => String(b.reminder_date || b.created_at || "").localeCompare(String(a.reminder_date || a.created_at || ""))).slice(0, 3);

@@ -128,43 +128,10 @@
                             <h3>Upcoming Due</h3>
                             <a href="fee-management.html" class="view-all">View All</a>
                         </div>
-                        <ul class="list-rows" id="upcomingDueList">
-                            <li>
-                                <div class="avatar avatar-sm" style="background:#ffd9a0;">EJ</div>
-                                <div class="row-info">
-                                    <strong>Emma Johnson</strong>
-                                    <span>Class 5 - Green Valley School</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Apr 15, 2024</span>
-                                    <strong class="amt-due">&#8377; 6,250</strong>
-                                    <span class="tag tag-due">Due</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="avatar avatar-sm" style="background:#c9e6ff;">LJ</div>
-                                <div class="row-info">
-                                    <strong>Liam Johnson</strong>
-                                    <span>Class 3 - Green Valley School</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Apr 20, 2024</span>
-                                    <strong class="amt-due">&#8377; 6,200</strong>
-                                    <span class="tag tag-due">Due</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="avatar avatar-sm" style="background:#ffd0da;">OS</div>
-                                <div class="row-info">
-                                    <strong>Olivia Smith</strong>
-                                    <span>Class 7 - Green Valley School</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Apr 22, 2024</span>
-                                    <strong class="amt-due">&#8377; 5,750</strong>
-                                    <span class="tag tag-due">Due</span>
-                                </div>
-                            </li>
+                        <ul class="list-rows loading-list" id="upcomingDueList" aria-live="polite" aria-busy="true">
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i><i></i></span></li>
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i><i></i></span></li>
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i><i></i></span></li>
                         </ul>
                     </div>
 
@@ -173,43 +140,10 @@
                             <h3>Recent Payments</h3>
                             <a href="payments.html" class="view-all">View All</a>
                         </div>
-                        <ul class="list-rows" id="recentPaymentsList">
-                            <li>
-                                <div class="avatar avatar-sm" style="background:#ffd9a0;">EJ</div>
-                                <div class="row-info">
-                                    <strong>Emma Johnson</strong>
-                                    <span>School Fee (March)</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Mar 10, 2024</span>
-                                    <strong class="amt-paid">&#8377; 6,250</strong>
-                                    <span class="tag tag-paid">Paid</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="avatar avatar-sm" style="background:#c9e6ff;">LJ</div>
-                                <div class="row-info">
-                                    <strong>Liam Johnson</strong>
-                                    <span>School Fee (March)</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Mar 10, 2024</span>
-                                    <strong class="amt-paid">&#8377; 6,250</strong>
-                                    <span class="tag tag-paid">Paid</span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="avatar avatar-sm" style="background:#d8d3ff;">NW</div>
-                                <div class="row-info">
-                                    <strong>Noah Williams</strong>
-                                    <span>Transport Fee (March)</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Mar 09, 2024</span>
-                                    <strong class="amt-paid">&#8377; 1,500</strong>
-                                    <span class="tag tag-paid">Paid</span>
-                                </div>
-                            </li>
+                        <ul class="list-rows loading-list" id="recentPaymentsList" aria-live="polite" aria-busy="true">
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i><i></i></span></li>
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i><i></i></span></li>
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i><i></i></span></li>
                         </ul>
                     </div>
 
@@ -223,20 +157,14 @@
                             <thead>
                                 <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
                             </thead>
-                            <tbody id="dashboardCalendarBody">
-                                <tr class="muted-row"><td>28</td><td>29</td><td>30</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-                                <tr><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
-                                <tr><td>12</td><td>13</td><td>14</td><td class="today">15<i></i></td><td>16</td><td>17</td><td>18</td></tr>
-                                <tr><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td></tr>
-                                <tr class="muted-row"><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td>1</td></tr>
+                            <tbody id="dashboardCalendarBody" class="loading-calendar" aria-busy="true">
+                                <tr><td colspan="7"><span class="dashboard-loading-text">Loading calendar…</span></td></tr>
                             </tbody>
                         </table>
                         <div class="upcoming-events">
                             <h4>Upcoming Events</h4>
-                            <ul id="dashboardUpcomingEvents">
-                                <li><span class="dot dot-blue"></span> School Fee Due <span class="ev-date">May 20, 2024</span></li>
-                                <li><span class="dot dot-green"></span> Transport Fee Due <span class="ev-date">May 22, 2024</span></li>
-                                <li><span class="dot dot-purple"></span> Annual Examination Fee <span class="ev-date">May 30, 2024</span></li>
+                            <ul id="dashboardUpcomingEvents" class="loading-list" aria-live="polite" aria-busy="true">
+                                <li class="dashboard-loading-text">Loading events…</li>
                             </ul>
                             <a href="calendar.html" class="view-all-events">View All Events</a>
                         </div>
@@ -267,7 +195,7 @@
                             <div class="donut-wrap">
                                 <canvas id="feeDonut" width="180" height="180"></canvas>
                             </div>
-                            <ul class="fee-legend" id="feeLegend"><li><span class="dot dot-blue"></span> No fee data <strong>0%</strong></li></ul>
+                            <ul class="fee-legend loading-list" id="feeLegend" aria-busy="true"><li class="dashboard-loading-text">Loading fee summary…</li></ul>
                         </div>
                         <div class="fee-totals">
                             <div>
@@ -317,40 +245,10 @@
                             <h3>Recent Reminders</h3>
                             <a href="reminders.html" class="view-all">View All</a>
                         </div>
-                        <ul class="reminder-rows" id="recentRemindersList">
-                            <li>
-                                <span class="reminder-icon rm-pink"><i class="fa-solid fa-bell"></i></span>
-                                <div class="row-info">
-                                    <strong>Fee Reminder - Emma Johnson</strong>
-                                    <span>School Fee (April)</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Apr 14, 2024</span>
-                                    <span class="tag tag-sent">Sent</span>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="reminder-icon rm-blue"><i class="fa-solid fa-bell"></i></span>
-                                <div class="row-info">
-                                    <strong>Fee Reminder - Liam Johnson</strong>
-                                    <span>School Fee (April)</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Apr 13, 2024</span>
-                                    <span class="tag tag-sent">Sent</span>
-                                </div>
-                            </li>
-                            <li>
-                                <span class="reminder-icon rm-purple"><i class="fa-solid fa-bell"></i></span>
-                                <div class="row-info">
-                                    <strong>Fee Reminder - Olivia Smith</strong>
-                                    <span>Transport Fee (April)</span>
-                                </div>
-                                <div class="row-meta">
-                                    <span class="row-date">Apr 13, 2024</span>
-                                    <span class="tag tag-sent">Sent</span>
-                                </div>
-                            </li>
+                        <ul class="reminder-rows loading-list" id="recentRemindersList" aria-live="polite" aria-busy="true">
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i></span></li>
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i></span></li>
+                            <li class="dashboard-skeleton-row"><span class="skeleton-circle"></span><span class="skeleton-lines"><i></i><i></i></span><span class="skeleton-meta"><i></i></span></li>
                         </ul>
                     </div>
                 </section>

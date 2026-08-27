@@ -161,3 +161,100 @@ body.sidebar-collapsed .sidebar-nav {
         display: inline-flex;
     }
 }
+
+
+/* Dashboard live-data loading state: no sample data is shown before Supabase responds. */
+.dashboard-skeleton-row { display:flex; align-items:center; gap:12px; min-height:58px; }
+.skeleton-circle, .skeleton-lines i, .skeleton-meta i { display:block; background:linear-gradient(90deg,#eef2f7 25%,#e5eaf1 37%,#eef2f7 63%); background-size:400% 100%; animation:dashboardSkeleton 1.2s ease-in-out infinite; }
+.skeleton-circle { width:36px; height:36px; border-radius:50%; flex:0 0 auto; }
+.skeleton-lines { flex:1; display:flex; flex-direction:column; gap:7px; }
+.skeleton-lines i:first-child { width:70%; height:10px; border-radius:5px; }
+.skeleton-lines i:last-child { width:48%; height:8px; border-radius:5px; }
+.skeleton-meta { width:82px; display:flex; flex-direction:column; gap:7px; align-items:flex-end; }
+.skeleton-meta i:first-child { width:70px; height:8px; border-radius:5px; }
+.skeleton-meta i:last-child { width:48px; height:9px; border-radius:5px; }
+.dashboard-loading-text { color:var(--text-muted); font-size:12px; text-align:center; padding:14px; }
+@keyframes dashboardSkeleton { 0% { background-position:100% 0; } 100% { background-position:0 0; } }
+
+/* Global dark-mode readability for existing module pages. */
+body.theme-dark .module-page-head h1,
+body.theme-dark .module-section-head h2,
+body.theme-dark .settings-card h2,
+body.theme-dark .calendar-title,
+body.theme-dark .calendar-date,
+body.theme-dark .recipient,
+body.theme-dark .module-table td,
+body.theme-dark .calendar-cell,
+body.theme-dark .field,
+body.theme-dark .filter-field,
+body.theme-dark .primary-btn,
+body.theme-dark .secondary-btn,
+body.theme-dark .table-action,
+body.theme-dark .modal-close,
+body.theme-dark .small-btn { color:var(--text-dark); }
+
+body.theme-dark .module-table,
+body.theme-dark .module-table-wrap,
+body.theme-dark .module-panel,
+body.theme-dark .settings-card,
+body.theme-dark .module-stat,
+body.theme-dark .module-table tbody,
+body.theme-dark .calendar-grid,
+body.theme-dark .calendar-cell,
+body.theme-dark .calendar-cell.muted,
+body.theme-dark .calendar-weekday,
+body.theme-dark .module-modal { background:#172235; border-color:var(--border); }
+body.theme-dark .module-table th,
+body.theme-dark .calendar-weekday { background:#1d2a3e; color:#c7d1df; border-color:var(--border); }
+body.theme-dark .module-table td { border-color:var(--border); color:#e7edf7; }
+body.theme-dark .module-table tbody tr:hover { background:#1c2a3f; }
+body.theme-dark .filter-field select,
+body.theme-dark .filter-field input,
+body.theme-dark .field input,
+body.theme-dark .field select,
+body.theme-dark .field textarea,
+body.theme-dark .secondary-btn,
+body.theme-dark .table-action,
+body.theme-dark .modal-close,
+body.theme-dark .small-btn,
+body.theme-dark .calendar-nav button { background:#101827; color:#e7edf7; border-color:var(--border); }
+body.theme-dark .primary-btn { color:#fff; }
+body.theme-dark .module-section-head p,
+body.theme-dark .module-page-head p,
+body.theme-dark .settings-card>p,
+body.theme-dark .report-note,
+body.theme-dark .inline-status,
+body.theme-dark .field-help,
+body.theme-dark .recipient-meta { color:#aeb9c9; }
+body.theme-dark .badge-pill { background:#183629; color:#8de0ae; }
+body.theme-dark .badge-pill.warn { background:#3b3019; color:#f3c56a; }
+body.theme-dark .badge-pill.danger { background:#3a2025; color:#ff9ea7; }
+body.theme-dark .badge-pill.blue { background:#182d4b; color:#9bc8ff; }
+body.theme-dark .empty-icon { background:#182d4b; color:#9bc8ff; }
+body.theme-dark .empty-state h3 { color:#e7edf7; }
+body.theme-dark .empty-state p { color:#aeb9c9; }
+body.theme-dark .modal-backdrop { background:rgba(0,0,0,.62); }
+body.theme-dark .module-message.success { background:#183629; color:#8de0ae; }
+body.theme-dark .module-message.error { background:#3a2025; color:#ff9ea7; }
+body.theme-dark .calendar-event { background:#182d4b; color:#9bc8ff; }
+body.theme-dark .calendar-event.due { background:#3b3019; color:#f3c56a; }
+body.theme-dark .calendar-grid { border-color:var(--border); }
+body.theme-dark .calendar-cell { border-color:var(--border); }
+body.theme-dark .calendar-cell.muted { color:#718096; }
+body.theme-dark .small-btn.success { color:#8de0ae; }
+body.theme-dark .skeleton-circle,
+body.theme-dark .skeleton-lines i,
+body.theme-dark .skeleton-meta i { background:linear-gradient(90deg,#202d41 25%,#2a3950 37%,#202d41 63%); background-size:400% 100%; }
+
+/* Dashboard-specific contrast fixes. */
+body.theme-dark .list-rows li,
+body.theme-dark .reminder-rows li,
+body.theme-dark .upcoming-events li,
+body.theme-dark .row-info strong,
+body.theme-dark .upcoming-events h4 { color:var(--text-dark); }
+body.theme-dark .calendar-table .muted-row td { color:#66758a; }
+body.theme-dark .chart-legend { color:#aeb9c9; }
+body.theme-dark .panel-head h3,
+body.theme-dark .calendar-head h3 { color:var(--text-dark); }
+body.theme-dark .view-all,
+body.theme-dark .view-all-events { color:#9bc8ff; }
