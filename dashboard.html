@@ -90,23 +90,23 @@
                     <div class="stat-card">
                         <div class="stat-text">
                             <span class="stat-label">Total Due</span>
-                            <strong class="stat-value stat-red">&#8377; 12,450</strong>
-                            <span class="stat-sub">From 18 Students</span>
+                            <strong class="stat-value stat-red" id="totalDueAmount">₹ 0.00</strong>
+                            <span class="stat-sub" id="totalDueSub">From 0 Students</span>
                         </div>
                         <div class="stat-icon icon-red"><i class="fa-solid fa-sack-dollar"></i></div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-text">
                             <span class="stat-label">Total Paid</span>
-                            <strong class="stat-value stat-green">&#8377; 18,500</strong>
-                            <span class="stat-sub">From 25 Students</span>
+                            <strong class="stat-value stat-green" id="totalPaidAmount">₹ 0.00</strong>
+                            <span class="stat-sub" id="totalPaidSub">From 0 Students</span>
                         </div>
                         <div class="stat-icon icon-green"><i class="fa-solid fa-money-bill-transfer"></i></div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-text">
                             <span class="stat-label stat-label-blue">Students</span>
-                            <strong class="stat-value">43</strong>
+                            <strong class="stat-value" id="totalStudentsCount">0</strong>
                             <span class="stat-sub">Total Students</span>
                         </div>
                         <div class="stat-icon icon-blue"><i class="fa-solid fa-user-group"></i></div>
@@ -114,7 +114,7 @@
                     <div class="stat-card stat-card-amber">
                         <div class="stat-text">
                             <span class="stat-label stat-label-amber">Upcoming Due</span>
-                            <strong class="stat-value">7</strong>
+                            <strong class="stat-value" id="upcomingDueCount">0</strong>
                             <span class="stat-sub">Next 7 Days</span>
                         </div>
                         <div class="stat-icon icon-amber"><i class="fa-solid fa-calendar-days"></i></div>
@@ -126,9 +126,9 @@
                     <div class="panel">
                         <div class="panel-head">
                             <h3>Upcoming Due</h3>
-                            <a href="#" class="view-all">View All</a>
+                            <a href="fee-management.html" class="view-all">View All</a>
                         </div>
-                        <ul class="list-rows">
+                        <ul class="list-rows" id="upcomingDueList">
                             <li>
                                 <div class="avatar avatar-sm" style="background:#ffd9a0;">EJ</div>
                                 <div class="row-info">
@@ -171,9 +171,9 @@
                     <div class="panel">
                         <div class="panel-head">
                             <h3>Recent Payments</h3>
-                            <a href="#" class="view-all">View All</a>
+                            <a href="payments.html" class="view-all">View All</a>
                         </div>
-                        <ul class="list-rows">
+                        <ul class="list-rows" id="recentPaymentsList">
                             <li>
                                 <div class="avatar avatar-sm" style="background:#ffd9a0;">EJ</div>
                                 <div class="row-info">
@@ -215,15 +215,15 @@
 
                     <div class="panel calendar-panel">
                         <div class="calendar-head">
-                            <button class="cal-nav"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h3>May 2024</h3>
-                            <button class="cal-nav"><i class="fa-solid fa-chevron-right"></i></button>
+                            <button class="cal-nav" id="dashboardPrevMonthBtn" type="button"><i class="fa-solid fa-chevron-left"></i></button>
+                            <h3 id="dashboardCalendarTitle">May 2024</h3>
+                            <button class="cal-nav" id="dashboardNextMonthBtn" type="button"><i class="fa-solid fa-chevron-right"></i></button>
                         </div>
-                        <table class="calendar-table">
+                        <table class="calendar-table" id="dashboardCalendarTable">
                             <thead>
                                 <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody id="dashboardCalendarBody">
                                 <tr class="muted-row"><td>28</td><td>29</td><td>30</td><td>1</td><td>2</td><td>3</td><td>4</td></tr>
                                 <tr><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
                                 <tr><td>12</td><td>13</td><td>14</td><td class="today">15<i></i></td><td>16</td><td>17</td><td>18</td></tr>
@@ -233,12 +233,12 @@
                         </table>
                         <div class="upcoming-events">
                             <h4>Upcoming Events</h4>
-                            <ul>
+                            <ul id="dashboardUpcomingEvents">
                                 <li><span class="dot dot-blue"></span> School Fee Due <span class="ev-date">May 20, 2024</span></li>
                                 <li><span class="dot dot-green"></span> Transport Fee Due <span class="ev-date">May 22, 2024</span></li>
                                 <li><span class="dot dot-purple"></span> Annual Examination Fee <span class="ev-date">May 30, 2024</span></li>
                             </ul>
-                            <a href="#" class="view-all-events">View All Events</a>
+                            <a href="calendar.html" class="view-all-events">View All Events</a>
                         </div>
                     </div>
                 </section>
@@ -267,21 +267,16 @@
                             <div class="donut-wrap">
                                 <canvas id="feeDonut" width="180" height="180"></canvas>
                             </div>
-                            <ul class="fee-legend">
-                                <li><span class="dot dot-blue"></span> Tuition Fee <strong>40%</strong></li>
-                                <li><span class="dot dot-green"></span> Transport Fee <strong>25%</strong></li>
-                                <li><span class="dot dot-amber"></span> Books & Others <strong>20%</strong></li>
-                                <li><span class="dot dot-purple"></span> Other Fee <strong>15%</strong></li>
-                            </ul>
+                            <ul class="fee-legend" id="feeLegend"><li><span class="dot dot-blue"></span> No fee data <strong>0%</strong></li></ul>
                         </div>
                         <div class="fee-totals">
                             <div>
                                 <span>Total Fee Collected</span>
-                                <strong class="stat-green">&#8377; 18,500</strong>
+                                <strong class="stat-green" id="feeTotalCollected">₹ 0.00</strong>
                             </div>
                             <div>
                                 <span>Total Due Amount</span>
-                                <strong class="stat-red">&#8377; 12,450</strong>
+                                <strong class="stat-red" id="feeTotalDue">₹ 0.00</strong>
                             </div>
                         </div>
                     </div>
@@ -320,9 +315,9 @@
                     <div class="panel">
                         <div class="panel-head">
                             <h3>Recent Reminders</h3>
-                            <a href="#" class="view-all">View All</a>
+                            <a href="reminders.html" class="view-all">View All</a>
                         </div>
-                        <ul class="reminder-rows">
+                        <ul class="reminder-rows" id="recentRemindersList">
                             <li>
                                 <span class="reminder-icon rm-pink"><i class="fa-solid fa-bell"></i></span>
                                 <div class="row-info">
