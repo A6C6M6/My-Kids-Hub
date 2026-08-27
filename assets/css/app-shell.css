@@ -52,14 +52,13 @@ body.theme-dark .payments-table td { border-color: var(--border); }
 body.sidebar-collapsed .sidebar { width: 78px; }
 body.sidebar-collapsed .sidebar-logo { justify-content: center; padding-left: 12px; padding-right: 12px; }
 body.sidebar-collapsed .logo-text,
-body.sidebar-collapsed .nav-item span,
-body.sidebar-collapsed .user-info,
-body.sidebar-collapsed .logout-btn span { display: none; }
-body.sidebar-collapsed .nav-item { justify-content: center; padding-left: 10px; padding-right: 10px; }
+body.sidebar-collapsed .user-info { display: none; }
+body.sidebar-collapsed .nav-item { justify-content: center; padding-left: 10px; padding-right: 10px; font-size: 0; }
+body.sidebar-collapsed .nav-item i { margin: 0; font-size: 16px; }
 body.sidebar-collapsed .sidebar-user { padding: 12px 10px; }
 body.sidebar-collapsed .user-card { justify-content: center; }
-body.sidebar-collapsed .logout-btn { font-size: 0; }
-body.sidebar-collapsed .logout-btn i { font-size: 14px; }
+body.sidebar-collapsed .logout-btn { font-size: 0; justify-content: center; padding-left: 10px; padding-right: 10px; }
+body.sidebar-collapsed .logout-btn i { margin: 0; font-size: 14px; }
 
 .shell-control-group { display: flex; align-items: center; gap: 8px; }
 .shell-control {
@@ -129,4 +128,36 @@ body.theme-dark .shell-popover { background: #172235; }
     body.sidebar-collapsed .logout-btn { font-size: 13.5px; }
     .shell-language { display: none; }
     .shell-control { width: 36px; height: 36px; }
+}
+
+/* Sidebar toggle uses the existing header hamburger on every authenticated page. */
+.topbar .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.sidebar {
+    transition: width 0.25s ease, transform 0.25s ease;
+}
+
+body.sidebar-collapsed .sidebar {
+    overflow-x: hidden;
+}
+
+body.sidebar-collapsed .sidebar-nav {
+    overflow-x: hidden;
+}
+
+@media (min-width: 861px) {
+    body.sidebar-collapsed .main-content {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 860px) {
+    .topbar .menu-toggle {
+        display: inline-flex;
+    }
 }

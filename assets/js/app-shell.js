@@ -78,7 +78,6 @@
         controls.id = "shellControls";
         controls.className = "shell-control-group";
         controls.innerHTML = `
-            <button class="shell-control" id="shellSidebarToggle" type="button" title="Collapse / Expand Sidebar" aria-label="Collapse / Expand Sidebar"><i class="fa-solid fa-bars"></i></button>
             <button class="shell-control" id="shellThemeToggle" type="button" title="Toggle Theme" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
             <select class="shell-language" id="shellLanguage" title="Language" aria-label="Language"><option value="en">English</option><option value="ml">മലയാളം</option></select>`;
         topRight.prepend(controls);
@@ -107,11 +106,41 @@
         $(".shell-popover")?.remove();
     };
 
-    $("#shellSidebarToggle")?.addEventListener("click", () => {
-        document.body.classList.toggle("sidebar-collapsed");
-        localStorage.setItem("mykidshub-sidebar-collapsed", document.body.classList.contains("sidebar-collapsed") ? "1" : "0");
+    const sidebar = $("#sidebar");
+    const menuToggle = $("#menuToggle");
+    const setSidebarState = (collapsed) => {
+        document.body.classList.toggle("sidebar-collapsed", collapsed);
+        localStorage.setItem("mykidshub-sidebar-collapsed", collapsed ? "1" : "0");
+        if (menuToggle) {
+            menuToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+            menuToggle.setAttribute("title", collapsed ? "Expand Sidebar" : "Collapse Sidebar");
+            menuToggle.setAttribute("aria-label", collapsed ? "Expand Sidebar" : "Collapse Sidebar");
+        }
+    };
+    if (localStorage.getItem("mykidshub-sidebar-collapsed") === "1" && window.innerWidth > 860) setSidebarState(true);
+    else if (menuToggle) {
+        menuToggle.setAttribute("aria-expanded", "true");
+        menuToggle.setAttribute("title", "Collapse Sidebar");
+        menuToggle.setAttribute("aria-label", "Collapse Sidebar");
+    }
+    menuToggle?.addEventListener("click", () => {
+        if (window.innerWidth <= 860) return;
+        setSidebarState(!document.body.classList.contains("sidebar-collapsed"));
     });
-    if (localStorage.getItem("mykidshub-sidebar-collapsed") === "1" && window.innerWidth > 860) document.body.classList.add("sidebar-collapsed");
+    window.addEventListener("resize", () => {
+        if (window.innerWidth <= 860) {
+            document.body.classList.remove("sidebar-collapsed");
+            if (menuToggle) {
+                menuToggle.setAttribute("aria-expanded", sidebar?.classList.contains("open") ? "true" : "false");
+                menuToggle.setAttribute("title", "Open / Close Sidebar");
+                menuToggle.setAttribute("aria-label", "Open / Close Sidebar");
+            }
+        } else {
+            const saved = localStorage.getItem("mykidshub-sidebar-collapsed") === "1";
+            setSidebarState(saved);
+            sidebar?.classList.remove("open");
+        }
+    });
 
     const theme = localStorage.getItem("mykidshub-theme") || "light";
     if (theme === "dark") document.body.classList.add("theme-dark");
