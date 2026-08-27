@@ -347,5 +347,11 @@ body.theme-dark .shell-profile-menu .shell-logout-item i {
     }
 }
 
-#shellProfileChip > .fa-chevron-down { transition: transform .18s ease; }
-#shellProfileChip[aria-expanded="true"] > .fa-chevron-down { transform: rotate(180deg); }
+#shellProfileChip > .fa-chevron-down {
+    transform: rotate(0deg);
+    transition: transform .18s ease;
+    transform-origin: center;
+}
+#shellProfileChip[aria-expanded="true"] > .fa-chevron-down {
+    transform: rotate(180deg);
+}

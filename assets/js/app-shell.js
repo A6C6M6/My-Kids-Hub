@@ -129,7 +129,10 @@
     const closePopovers = () => {
         overlayClose();
         $(".shell-popover")?.remove();
-        $("#shellProfileChip")?.setAttribute("aria-expanded", "false");
+        const profileChip = $("#shellProfileChip");
+        if (profileChip) {
+            profileChip.setAttribute("aria-expanded", "false");
+        }
     };
 
     const sidebar = $("#sidebar");
@@ -313,9 +316,24 @@
         }
     };
     $("#shellBellBtn")?.addEventListener("click", event => { event.stopPropagation(); openNotifications(); });
-    $(document).addEventListener("click", event => {
-        if (!event.target.closest(".shell-popover") && !event.target.closest("#shellBellBtn") && !event.target.closest("#shellProfileChip")) closePopovers();
+    /*
+     * Profile dropdown dismissal: use mousedown so the document handler
+     * runs reliably before the following click event. The profile trigger
+     * and the dropdown itself are treated as the inside area; everything
+     * else closes the menu and resets aria-expanded, which also returns the
+     * chevron to its normal/down position through CSS.
+     */
+    $(document).addEventListener("mousedown", event => {
+        const target = event.target;
+        const profileChip = $("#shellProfileChip");
+        const profileMenu = $(".shell-profile-menu");
+
+        if (!profileChip || !profileMenu) return;
+        if (profileChip.contains(target) || profileMenu.contains(target)) return;
+
+        closePopovers();
     });
+
     $(document).addEventListener("keydown", event => {
         if (event.key === "Escape") closePopovers();
     });
