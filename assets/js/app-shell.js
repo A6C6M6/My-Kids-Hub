@@ -316,6 +316,9 @@
     $(document).addEventListener("click", event => {
         if (!event.target.closest(".shell-popover") && !event.target.closest("#shellBellBtn") && !event.target.closest("#shellProfileChip")) closePopovers();
     });
+    $(document).addEventListener("keydown", event => {
+        if (event.key === "Escape") closePopovers();
+    });
     window.addEventListener("resize", closePopovers);
 
     try { await loadNotifications(); } catch (_) {}

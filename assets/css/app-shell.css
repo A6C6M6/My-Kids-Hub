@@ -265,10 +265,11 @@ body.theme-dark .view-all-events { color:#9bc8ff; }
     min-width: 270px;
     border-radius: 14px;
     transform-origin: top right;
-    animation: shellProfileDrop .18s ease-out;
+    animation: shellProfileDrop .18s cubic-bezier(.2,.8,.2,1);
+    will-change: opacity, transform;
 }
 @keyframes shellProfileDrop {
-    from { opacity: 0; transform: translateY(-6px) scale(.98); }
+    from { opacity: 0; transform: translateY(-8px) scale(.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .shell-profile-summary {
