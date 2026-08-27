@@ -259,92 +259,26 @@ body.theme-dark .calendar-head h3 { color:var(--text-dark); }
 body.theme-dark .view-all,
 body.theme-dark .view-all-events { color:#9bc8ff; }
 
-
-/* Profile avatar/dropdown system */
+/* Header profile dropdown: smooth slide-down / fade interaction. */
 .shell-profile-menu {
-    min-width: 270px;
-    border-radius: 14px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
     transform-origin: top right;
-    animation: shellProfileDrop .18s ease-out;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out, visibility 0.2s ease-in-out;
 }
-@keyframes shellProfileDrop {
-    from { opacity: 0; transform: translateY(-6px) scale(.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+.shell-profile-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
-.shell-profile-summary {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:14px 16px;
-    border-bottom:1px solid var(--border);
+.shell-profile-menu + .shell-popover,
+.shell-profile-menu.is-open { /* keep the profile menu above the application shell */
+    z-index: 1001;
 }
-.shell-profile-summary-avatar {
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex:0 0 auto;
-    background:#0056b3;
-    color:#fff;
-    font-weight:700;
-    font-size:13px;
-    overflow:hidden;
+#shellProfileChip > i {
+    transition: transform 0.2s ease-in-out;
 }
-.shell-profile-summary-avatar img {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    border-radius:50%;
+#shellProfileChip.profile-open > i {
+    transform: rotate(180deg);
 }
-.shell-profile-summary strong,
-.shell-profile-summary span,
-.shell-profile-summary small {
-    display:block;
-}
-.shell-profile-summary strong { font-size:13px; }
-.shell-profile-summary span { margin-top:2px; color:var(--primary); font-size:11px; font-weight:600; }
-.shell-profile-summary small { margin-top:3px; color:var(--text-muted); font-size:10px; overflow-wrap:anywhere; }
-.shell-profile-menu .shell-popover-list { padding:7px; }
-.shell-profile-menu .shell-popover-list a,
-.shell-profile-menu .shell-popover-list button {
-    min-height:40px;
-}
-.shell-menu-divider {
-    margin-top:6px;
-    padding-top:6px;
-    border-top:1px solid var(--border);
-}
-.shell-profile-menu .shell-logout-item {
-    color:#c62828 !important;
-}
-.shell-profile-menu .shell-logout-item i {
-    color:#c62828 !important;
-}
-.profile-chip {
-    cursor:pointer;
-    user-select:none;
-}
-.profile-chip:focus-visible {
-    outline:2px solid var(--primary);
-    outline-offset:3px;
-    border-radius:10px;
-}
-body.theme-dark .shell-profile-summary {
-    border-color:var(--border);
-}
-body.theme-dark .shell-profile-menu .shell-logout-item {
-    color:#ff8f8f !important;
-}
-body.theme-dark .shell-profile-menu .shell-logout-item i {
-    color:#ff8f8f !important;
-}
-@media (max-width: 600px) {
-    .shell-profile-menu {
-        min-width: min(300px, calc(100vw - 20px));
-    }
-}
-
-#shellProfileChip > .fa-chevron-down { transition: transform .18s ease; }
-#shellProfileChip[aria-expanded="true"] > .fa-chevron-down { transform: rotate(180deg); }
