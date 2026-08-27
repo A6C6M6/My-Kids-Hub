@@ -323,7 +323,7 @@
      * else closes the menu and resets aria-expanded, which also returns the
      * chevron to its normal/down position through CSS.
      */
-    $(document).addEventListener("mousedown", event => {
+    document.addEventListener("mousedown", event => {
         const target = event.target;
         const profileChip = $("#shellProfileChip");
         const profileMenu = $(".shell-profile-menu");
@@ -334,7 +334,7 @@
         closePopovers();
     });
 
-    $(document).addEventListener("keydown", event => {
+    document.addEventListener("keydown", event => {
         if (event.key === "Escape") closePopovers();
     });
     window.addEventListener("resize", closePopovers);
