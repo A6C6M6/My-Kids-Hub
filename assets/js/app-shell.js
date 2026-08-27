@@ -32,14 +32,39 @@
     }
 
     const user = session.user;
-    const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email || "User";
-    const role = user.user_metadata?.role || "Administrator";
+    let profileData = {};
+    try {
+        const { data } = await client.from("profiles")
+            .select("full_name,mobile,avatar_url,role")
+            .eq("id", user.id)
+            .maybeSingle();
+        profileData = data || {};
+    } catch (_) {}
 
-    $$(".user-info strong, .profile-text strong").forEach(el => el.textContent = displayName);
-    $$(".user-info span:not(.status-dot), .profile-text span").forEach(el => {
-        if (el.textContent.trim().toLowerCase() === "administrator" || el.textContent.trim().toLowerCase() === "user") el.textContent = role;
-    });
-    $$(".avatar").forEach(el => el.textContent = initials(displayName));
+    const displayName = profileData.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email || "User";
+    const role = profileData.role === "admin" ? "Administrator" : (profileData.role === "staff" ? "Staff" : (profileData.role === "parent" ? "Parent" : (user.user_metadata?.role || "Administrator")));
+    const avatarUrl = profileData.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || "";
+
+    const renderHeaderIdentity = (name = displayName, roleName = role, imageUrl = avatarUrl) => {
+        const safeName = name || user.email || "User";
+        const safeInitials = initials(safeName);
+        $$(".user-info strong, .profile-text strong").forEach(el => el.textContent = safeName);
+        $$(".user-info span:not(.status-dot), .profile-text span").forEach(el => {
+            if (["administrator","user","staff","parent"].includes(el.textContent.trim().toLowerCase()) || !el.textContent.trim()) el.textContent = roleName;
+        });
+        $$(".avatar").forEach(el => {
+            el.textContent = safeInitials;
+            el.style.background = el.style.background || "#0056b3";
+            el.style.overflow = "hidden";
+            if (imageUrl) {
+                el.innerHTML = `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(safeName)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">`;
+                el.querySelector("img")?.addEventListener("error", () => {
+                    el.innerHTML = escapeHtml(safeInitials);
+                }, { once: true });
+            }
+        });
+    };
+    renderHeaderIdentity();
     const pageDescription = $(".topbar-left p");
     if (pageDescription && document.title.startsWith("Dashboard")) pageDescription.textContent = `Welcome back, ${displayName}! Here's what's happening today.`;
 
@@ -104,11 +129,7 @@
     const closePopovers = () => {
         overlayClose();
         $(".shell-popover")?.remove();
-        const profileChip = $("#shellProfileChip");
-        if (profileChip) {
-            profileChip.classList.remove("profile-open");
-            profileChip.setAttribute("aria-expanded", "false");
-        }
+        $("#shellProfileChip")?.setAttribute("aria-expanded", "false");
     };
 
     const sidebar = $("#sidebar");
@@ -177,69 +198,66 @@
         popover.style.top = `${Math.min(window.innerHeight - 20, r.bottom + 10)}px`;
     };
 
+    const confirmLogout = async () => {
+        const ok = window.confirm("Are you sure you want to logout?");
+        if (!ok) return false;
+        try {
+            const { error } = await client.auth.signOut();
+            if (error) throw error;
+        } catch (error) {
+            console.error("Logout failed:", error);
+            alert("Unable to logout. Please try again.");
+            return false;
+        }
+        try {
+            sessionStorage.clear();
+            localStorage.removeItem("mykidshub-current-user");
+        } catch (_) {}
+        window.location.replace("index.html");
+        return true;
+    };
+
     const buildProfileMenu = () => {
         const chip = $("#shellProfileChip");
         if (!chip) return;
-
         chip.setAttribute("role", "button");
         chip.setAttribute("tabindex", "0");
-        chip.setAttribute("aria-haspopup", "true");
+        chip.setAttribute("aria-haspopup", "menu");
         chip.setAttribute("aria-expanded", "false");
 
-        const closeProfileMenu = () => {
-            const popover = $(".shell-profile-menu");
-            if (popover) {
-                popover.classList.remove("is-open");
-                window.setTimeout(() => {
-                    if (popover && !popover.classList.contains("is-open")) popover.remove();
-                }, 200);
-            }
-            chip.classList.remove("profile-open");
-            chip.setAttribute("aria-expanded", "false");
-        };
-
-        const openProfileMenu = () => {
+        const toggle = (event) => {
+            event?.stopPropagation();
             const existing = $(".shell-profile-menu");
             if (existing) {
-                closeProfileMenu();
+                closePopovers();
+                chip.setAttribute("aria-expanded", "false");
                 return;
             }
-
             const popover = createPopover("shell-profile-menu");
-            popover.innerHTML = `<div class="shell-popover-head"><strong>${escapeHtml(displayName)}</strong><span>${escapeHtml(user.email || "")}</span></div><ul class="shell-popover-list">
-                <li><a href="settings.html#profileSettingsSection"><i class="fa-solid fa-user"></i><span>Profile Settings</span></a></li>
-                <li><a href="settings.html#accountSettingsSection"><i class="fa-solid fa-shield-halved"></i><span>Account Settings</span></a></li>
-                <li><a href="settings.html#passwordSettingsSection"><i class="fa-solid fa-key"></i><span>Change Password</span></a></li>
-                <li><a href="settings.html#preferencesSettingsSection"><i class="fa-solid fa-sliders"></i><span>Preferences</span></a></li>
-                <li><button id="shellLogoutBtn" type="button"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></button></li>
-            </ul>`;
+            popover.setAttribute("role", "menu");
+            popover.innerHTML = `<div class="shell-profile-summary">
+                    <div class="shell-profile-summary-avatar">${avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(displayName)}">` : escapeHtml(initials(displayName))}</div>
+                    <div><strong>${escapeHtml(displayName)}</strong><span>${escapeHtml(role)}</span><small>${escapeHtml(user.email || "")}</small></div>
+                </div>
+                <ul class="shell-popover-list">
+                    <li><a href="settings.html#profileSettingsSection"><i class="fa-solid fa-user"></i><span>Profile Settings</span></a></li>
+                    <li><a href="settings.html#accountSettingsSection"><i class="fa-solid fa-shield-halved"></i><span>Account Settings</span></a></li>
+                    <li><a href="settings.html#passwordSettingsSection"><i class="fa-solid fa-key"></i><span>Change Password</span></a></li>
+                    <li><a href="settings.html#preferencesSettingsSection"><i class="fa-solid fa-sliders"></i><span>Preferences</span></a></li>
+                    <li class="shell-menu-divider"><button id="shellLogoutBtn" type="button" class="shell-logout-item"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span></button></li>
+                </ul>`;
             positionPopover(popover, chip);
-            requestAnimationFrame(() => popover.classList.add("is-open"));
-            chip.classList.add("profile-open");
             chip.setAttribute("aria-expanded", "true");
-
-            $("#shellLogoutBtn")?.addEventListener("click", async () => {
-                try { await client.auth.signOut(); } finally { window.location.replace("index.html"); }
-            });
+            $("#shellLogoutBtn")?.addEventListener("click", confirmLogout);
         };
-
-        chip.addEventListener("click", event => {
-            event.stopPropagation();
-            openProfileMenu();
-        });
+        chip.addEventListener("click", toggle);
         chip.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                event.stopPropagation();
-                openProfileMenu();
-            }
-        });
-
-        window.addEventListener("keydown", event => {
-            if (event.key === "Escape" && $(".shell-profile-menu")) closeProfileMenu();
+            if (event.key === "Enter" || event.key === " ") { event.preventDefault(); toggle(event); }
+            if (event.key === "Escape") { closePopovers(); chip.setAttribute("aria-expanded", "false"); }
         });
     };
     buildProfileMenu();
+    $$(".logout-btn").forEach(btn => btn.addEventListener("click", event => { event.preventDefault(); confirmLogout(); }));
 
     const getFeeNotifications = async () => {
         const today = new Date();
@@ -314,6 +332,25 @@
         } catch (error) { console.warn("My-Kids-Hub realtime setup unavailable:", error); }
     };
     subscribe();
+
+    // Layered protection for authenticated pages after logout/back navigation.
+    const protectHistory = () => {
+        try {
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({ myKidsHubProtected: true }, document.title, window.location.href);
+            }
+            window.addEventListener("pageshow", async event => {
+                if (!event.persisted) return;
+                const { data } = await client.auth.getSession();
+                if (!data?.session?.user) window.location.replace("index.html");
+            });
+            window.addEventListener("popstate", async () => {
+                const { data } = await client.auth.getSession();
+                if (!data?.session?.user) window.location.replace("index.html");
+            });
+        } catch (_) {}
+    };
+    protectHistory();
 
     client.auth.onAuthStateChange((event, nextSession) => {
         if ((event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") && !nextSession) window.location.replace("index.html");
