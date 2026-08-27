@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments | My-Kids-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/payments.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 8 L92 40 H82 V88 H18 V40 H8 Z" fill="#ffffff"/><rect x="28" y="50" width="44" height="38" rx="4" fill="#0056b3"/><rect x="44" y="16" width="12" height="12" fill="#ffcc00"/></svg></div>
+            <div class="logo-text"><h1>My-Kids-Hub</h1><span>School Fee Management</span></div>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+            <a href="students.html" class="nav-item"><i class="fa-solid fa-user-graduate"></i> Students</a>
+            <a href="parents.html" class="nav-item"><i class="fa-solid fa-people-group"></i> Parents</a>
+            <a href="fee-management.html" class="nav-item"><i class="fa-solid fa-indian-rupee-sign"></i> Fee Management</a>
+            <a href="payments.html" class="nav-item active"><i class="fa-solid fa-credit-card"></i> Payments</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-chart-column"></i> Reports</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-bell"></i> Reminders</a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-calendar"></i> Calendar</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-card"><div class="avatar avatar-md" style="background:#ffcc00;">AB</div><div class="user-info"><strong>User</strong><span>Administrator</span><span class="status-dot"><i class="fa-solid fa-circle"></i> Online</span></div></div>
+            <a href="index.html" class="logout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" type="button"><i class="fa-solid fa-bars"></i></button>
+                <div><h2>Payments</h2><p>Record and manage student payments.</p></div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn bell-btn" type="button"><i class="fa-regular fa-bell"></i></button>
+                <div class="profile-chip"><div class="avatar avatar-sm" style="background:#0056b3;">AB</div><div class="profile-text"><strong>User</strong><span>Administrator</span></div><i class="fa-solid fa-chevron-down"></i></div>
+            </div>
+        </header>
+
+        <div class="content-scroll">
+            <section class="payment-page-head">
+                <div><span class="page-kicker">PAYMENTS</span><h1>Payments</h1><p>Record, view and manage payments received from students.</p></div>
+                <div class="head-actions"><button class="secondary-btn" id="refreshPaymentsBtn" type="button"><i class="fa-solid fa-rotate"></i> Refresh</button><button class="primary-btn" id="recordPaymentBtn" type="button"><i class="fa-solid fa-plus"></i> Record Payment</button></div>
+            </section>
+
+            <div id="paymentMessage" class="payment-message" role="status" aria-live="polite"></div>
+
+            <section class="payment-stats">
+                <div class="panel payment-stat"><span>Total Payments</span><strong id="paymentCount">0</strong></div>
+                <div class="panel payment-stat"><span>Total Received</span><strong id="totalReceived">₹ 0.00</strong></div>
+                <div class="panel payment-stat"><span>Today's Payments</span><strong id="todayPaymentCount">0</strong></div>
+                <div class="panel payment-stat"><span>Today's Amount</span><strong id="todayReceived">₹ 0.00</strong></div>
+            </section>
+
+            <section class="panel payment-panel">
+                <div class="section-head"><div><h2>Payment Records</h2><p>View and manage recorded student payments.</p></div></div>
+                <div class="payment-filters">
+                    <label class="filter-field"><span>Student</span><select id="studentFilter"><option value="">All Students</option></select></label>
+                    <label class="filter-field"><span>Payment Method</span><select id="methodFilter"><option value="">All Methods</option><option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank_transfer">Bank Transfer</option><option value="cheque">Cheque</option><option value="online">Online</option><option value="other">Other</option></select></label>
+                    <label class="filter-field"><span>From</span><input id="fromDateFilter" type="date"></label>
+                    <label class="filter-field"><span>To</span><input id="toDateFilter" type="date"></label>
+                </div>
+                <div class="table-wrap">
+                    <table class="payment-table">
+                        <thead><tr><th>Student</th><th>Amount</th><th>Method</th><th>Payment Date</th><th>Transaction Reference</th><th>Received By</th><th>Actions</th></tr></thead>
+                        <tbody id="paymentsTableBody"><tr><td colspan="7" class="table-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading payments...</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="paymentEmptyState" hidden><div class="empty-icon"><i class="fa-solid fa-money-bill-transfer"></i></div><h3>No payments found</h3><p>Record a payment to start managing payment history.</p><button class="primary-btn" id="emptyRecordPaymentBtn" type="button"><i class="fa-solid fa-plus"></i> Record Payment</button></div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="paymentModal" hidden>
+    <div class="payment-modal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+        <div class="modal-head"><div><span class="page-kicker" id="paymentModalKicker">NEW PAYMENT</span><h2 id="paymentModalTitle">Record Payment</h2></div><button class="modal-close" id="closePaymentModalBtn" type="button"><i class="fa-solid fa-xmark"></i></button></div>
+        <form id="paymentForm" novalidate>
+            <input type="hidden" id="paymentId">
+            <div class="form-grid">
+                <label class="field"><span>Student *</span><select id="paymentStudent" required></select></label>
+                <label class="field"><span>Student Fee</span><select id="paymentStudentFee"><option value="">Select a student first</option></select></label>
+                <label class="field"><span>Amount *</span><input id="paymentAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label>
+                <label class="field"><span>Payment Method *</span><select id="paymentMethod" required><option value="cash">Cash</option><option value="upi">UPI</option><option value="card">Card</option><option value="bank_transfer">Bank Transfer</option><option value="cheque">Cheque</option><option value="online">Online</option><option value="other">Other</option></select></label>
+                <label class="field"><span>Payment Date *</span><input id="paymentDate" type="date" required></label>
+                <label class="field"><span>Transaction Reference</span><input id="transactionReference" maxlength="150" placeholder="Optional reference number"></label>
+                <label class="field"><span>Received By</span><input id="receivedBy" maxlength="150" placeholder="Staff name"></label>
+                <label class="field field-full"><span>Remarks</span><textarea id="paymentRemarks" rows="3" maxlength="500" placeholder="Optional remarks"></textarea></label>
+            </div>
+            <p class="field-help">Recording a payment updates only the payment record. Existing student-fee status/business rules are not changed automatically.</p>
+            <div class="form-error" id="paymentFormError"></div>
+            <div class="modal-actions"><button class="secondary-btn" id="cancelPaymentBtn" type="button">Cancel</button><button class="primary-btn" id="savePaymentBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Payment</button></div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/payments.js"></script>
+</body>
+</html>
