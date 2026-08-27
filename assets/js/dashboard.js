@@ -3,8 +3,8 @@
 (async () => {
     "use strict";
 
-    const SUPABASE_URL = "https://ibsqupjmuytjxoybstdw.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_DlROTiwb6u5EhKo6Z12tfQ_uqhR-RU8";
+    const SUPABASE_URL = window.MY_KIDS_HUB_SUPABASE_URL;
+    const SUPABASE_ANON_KEY = window.MY_KIDS_HUB_SUPABASE_ANON_KEY;
 
     const state = {
         client: null,
@@ -458,6 +458,13 @@
             document.body.appendChild(message);
         }
     };
+
+    window.addEventListener("mykidshub:data-changed", (event) => {
+        const table = event.detail?.table;
+        if (["student_fees", "payments", "calendar_events", "notifications"].includes(table) && state.client && state.user) {
+            loadDashboardData().catch(error => console.warn("My-Kids-Hub dashboard live refresh failed:", error));
+        }
+    });
 
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeDashboardAuth, { once: true });
     else initializeDashboardAuth();

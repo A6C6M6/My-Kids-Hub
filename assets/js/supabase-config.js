@@ -7,6 +7,9 @@ const SUPABASE_ANON_KEY = atob(
     "c2JfcHVibGlzaGFibGVfRGxST1Rpd2I2dTVFaEtvNloxMnRmUV91cWhSLVJVOA=="
 );
 
+window.MY_KIDS_HUB_SUPABASE_URL = SUPABASE_URL;
+window.MY_KIDS_HUB_SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
+
 /*
  * Global Supabase client.
  *

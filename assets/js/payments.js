@@ -20,8 +20,9 @@
     const ensureClient = async () => {
         if (window.supabaseClient?.auth) return window.supabaseClient;
         if (!window.supabase?.createClient) throw new Error("Authentication service is not available. Please try again later.");
-        const url = "https://ibsqupjmuytjxoybstdw.supabase.co";
-        const key = atob("c2JfcHVibGlzaGFibGVfRGxST1Rpd2I2dTVFaEtvNloxMnRmUV91cWhSLVJVOA==");
+        const url = window.MY_KIDS_HUB_SUPABASE_URL;
+        const key = window.MY_KIDS_HUB_SUPABASE_ANON_KEY;
+        if (!url || !key) throw new Error("Supabase configuration is unavailable. Please reload the application.");
         window.supabaseClient = window.supabase.createClient(url, key, { auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:false, flowType:"pkce" } });
         return window.supabaseClient;
     };

@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (window.supabaseClient?.auth) return window.supabaseClient;
         if (!window.supabase?.createClient) return null;
 
-        const SUPABASE_URL = "https://ibsqupjmuytjxoybstdw.supabase.co";
-        const SUPABASE_ANON_KEY = atob("c2JfcHVibGlzaGFibGVfRGxST1Rpd2I2dTVFaEtvNloxMnRmUV91cWhSLVJVOA==");
+        const SUPABASE_URL = window.MY_KIDS_HUB_SUPABASE_URL;
+        const SUPABASE_ANON_KEY = window.MY_KIDS_HUB_SUPABASE_ANON_KEY;
 
         try {
             window.supabaseClient = window.supabase.createClient(
