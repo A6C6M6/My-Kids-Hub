@@ -175,10 +175,17 @@
     const theme = localStorage.getItem("mykidshub-theme") || "light";
     if (theme === "dark") document.body.classList.add("theme-dark");
     const updateThemeIcon = () => {
+        const dark = document.body.classList.contains("theme-dark");
         const icon = $("#shellThemeToggle i");
-        if (icon) icon.className = `fa-solid ${document.body.classList.contains("theme-dark") ? "fa-sun" : "fa-moon"}`;
+        const toggle = $("#shellThemeToggle");
+        if (icon) icon.className = `fa-solid ${dark ? "fa-sun" : "fa-moon"}`;
+        if (toggle) {
+            toggle.title = dark ? "Switch to Light Theme" : "Switch to Dark Theme";
+            toggle.setAttribute("aria-label", dark ? "Switch to Light Theme" : "Switch to Dark Theme");
+        }
     };
     updateThemeIcon();
+    window.addEventListener("mykidshub:theme-changed", updateThemeIcon);
     $("#shellThemeToggle")?.addEventListener("click", () => {
         document.body.classList.toggle("theme-dark");
         localStorage.setItem("mykidshub-theme", document.body.classList.contains("theme-dark") ? "dark" : "light");

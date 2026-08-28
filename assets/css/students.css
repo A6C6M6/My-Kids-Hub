@@ -94,3 +94,18 @@
     .student-modal { padding: 18px; border-radius: 14px; }
 }
 body.modal-open { overflow: hidden; }
+
+/* Dark theme readability for the Students table. */
+body.theme-dark .students-table th {
+    background: #1d2a3e;
+    color: #c7d1df;
+    border-color: var(--border);
+}
+body.theme-dark .students-table td {
+    background: #172235;
+    color: #e7edf7;
+    border-color: var(--border);
+}
+body.theme-dark .students-table tbody tr:hover {
+    background: #1c2a3f;
+}

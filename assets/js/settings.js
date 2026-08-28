@@ -174,6 +174,7 @@
             localStorage.setItem("mykidshub-theme", preferences.theme);
             localStorage.setItem("mykidshub-language", preferences.language);
             document.body.classList.toggle("theme-dark", preferences.theme === "dark");
+            window.dispatchEvent(new CustomEvent("mykidshub:theme-changed", { detail: { theme: preferences.theme } }));
             show("Preferences saved successfully.");
         } catch (error) { console.error(error); show("Unable to update account settings.", "error"); }
         finally { button.disabled = false; button.textContent = "Save Account Settings"; }
