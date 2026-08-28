@@ -90,12 +90,56 @@
                     </div>
                 </section>
 
-                <section class="student-toolbar panel">
-                    <div class="student-count"><strong id="studentCount">0</strong><span>Total Students</span></div>
+                <section class="student-stats-grid">
+                    <article class="student-stat-card">
+                        <div><span class="student-stat-label">Total Students</span><strong id="studentCount">0</strong></div>
+                        <span class="student-stat-icon blue"><i class="fa-solid fa-user-graduate"></i></span>
+                    </article>
+                    <article class="student-stat-card">
+                        <div><span class="student-stat-label">Total Schools</span><strong id="schoolCount">0</strong></div>
+                        <span class="student-stat-icon purple"><i class="fa-solid fa-school"></i></span>
+                    </article>
+                    <article class="student-stat-card">
+                        <div><span class="student-stat-label">Total Active</span><strong id="activeCount">0</strong></div>
+                        <span class="student-stat-icon green"><i class="fa-solid fa-circle-check"></i></span>
+                    </article>
+                    <article class="student-stat-card">
+                        <div><span class="student-stat-label">Total Inactive</span><strong id="inactiveCount">0</strong></div>
+                        <span class="student-stat-icon amber"><i class="fa-solid fa-circle-pause"></i></span>
+                    </article>
+                    <article class="student-stat-card">
+                        <div><span class="student-stat-label">Total Left</span><strong id="leftCount">0</strong></div>
+                        <span class="student-stat-icon red"><i class="fa-solid fa-person-walking-arrow-right"></i></span>
+                    </article>
+                </section>
+
+                <section class="panel student-filter-panel">
+                    <div class="student-filter-row">
+                        <label class="student-search-field">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input id="studentSearch" type="search" placeholder="Search by student name, admission no., or school" autocomplete="off">
+                        </label>
+                        <select id="studentClassFilter" aria-label="Filter by class"><option value="">All Classes</option></select>
+                        <select id="studentSchoolFilter" aria-label="Filter by school"><option value="">All Schools</option></select>
+                        <select id="studentStatusFilter" aria-label="Filter by status">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="left">Left</option>
+                        </select>
+                        <button class="secondary-btn" id="clearStudentFilters" type="button"><i class="fa-solid fa-filter-circle-xmark"></i> Clear</button>
+                    </div>
                 </section>
 
                 <section class="panel students-panel">
                     <div id="studentMessage" class="student-message" role="status" aria-live="polite"></div>
+                    <div class="student-table-head">
+                        <div>
+                            <h3>Student Records</h3>
+                            <p>View and manage student information.</p>
+                        </div>
+                        <span id="studentResultCount" class="student-result-count">0 shown</span>
+                    </div>
                     <div class="table-wrap">
                         <table class="students-table">
                             <thead>
@@ -137,11 +181,19 @@
 
             <form id="studentForm" novalidate>
                 <input type="hidden" id="studentId">
+                <div class="student-photo-row">
+                    <div class="student-photo-preview" id="studentPhotoPreview"><span class="student-photo-placeholder"><i class="fa-solid fa-user"></i></span></div>
+                    <div class="student-photo-controls">
+                        <label class="field"><span>Profile Photo</span><input id="studentPhoto" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                        <small>PNG, JPG/JPEG or WebP · Max 2 MB</small>
+                    </div>
+                </div>
                 <div class="form-grid">
                     <label class="field"><span>First Name *</span><input id="firstName" name="first_name" required maxlength="100"></label>
                     <label class="field"><span>Last Name</span><input id="lastName" name="last_name" maxlength="100"></label>
                     <label class="field"><span>Admission Number</span><input id="admissionNumber" name="admission_number" maxlength="100"></label>
                     <label class="field"><span>Date of Birth</span><input id="dateOfBirth" name="date_of_birth" type="date"></label>
+                    <label class="field"><span>Age</span><input id="age" type="text" readonly placeholder="Auto calculated"></label>
                     <label class="field"><span>Gender</span><select id="gender" name="gender"><option value="">Select gender</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></label>
                     <label class="field"><span>Class</span><input id="className" name="class_name" maxlength="100"></label>
                     <label class="field"><span>Division</span><input id="division" name="division" maxlength="50"></label>
@@ -150,6 +202,8 @@
                     <label class="field"><span>Parent Mobile</span><input id="parentMobile" name="parent_mobile" type="tel" maxlength="30"></label>
                     <label class="field"><span>Parent Email</span><input id="parentEmail" name="parent_email" type="email" maxlength="200"></label>
                     <label class="field"><span>Status</span><select id="status" name="status"><option value="active">Active</option><option value="inactive">Inactive</option><option value="left">Left</option></select></label>
+                    <label class="field"><span>Created Date</span><input id="createdDate" type="text" readonly></label>
+                    <label class="field"><span>Updated Date</span><input id="updatedDate" type="text" readonly></label>
                     <label class="field field-full"><span>Address</span><textarea id="address" name="address" rows="3" maxlength="500"></textarea></label>
                 </div>
                 <div class="form-error" id="studentFormError" role="alert"></div>

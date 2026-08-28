@@ -133,6 +133,7 @@ create table if not exists public.students (
     parent_mobile text,
     parent_email text,
     address text,
+    photo_url text,
     status text not null default 'active' check (status in ('active','inactive','left')),
     created_at timestamptz not null default now(),
     updated_at timestamptz not null default now(),
