@@ -15,6 +15,8 @@ window.MY_KIDS_HUB_SUPABASE_ANON_KEY = SUPABASE_ANON_KEY;
  * Sundays and the 2nd/4th Saturdays are treated as holidays as requested.
  */
 window.MY_KIDS_HUB_CALENDAR = {
+    /* Dashboard calendar week starts on Sunday (0 = Sunday). */
+    weekStartsOn: 0,
     weekdays: {
         en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         ml: ["ഞായർ", "തിങ്കൾ", "ചൊവ്വ", "ബുധൻ", "വ്യാഴം", "വെള്ളി", "ശനി"]

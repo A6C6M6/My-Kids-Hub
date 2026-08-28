@@ -317,11 +317,16 @@
         title.textContent = `${calendarMonthName(month, lang)} ${year}`;
         if (table) {
             const headerCells = table.querySelectorAll("thead th");
-            [0, 1, 2, 3, 4, 5, 6].forEach(day => { if (headerCells[day]) headerCells[day].textContent = calendarWeekdayName(day, lang); });
+            const weekStartsOn = Number.isInteger(calendarConfig.weekStartsOn) ? calendarConfig.weekStartsOn : 0;
+            for (let index = 0; index < 7; index++) {
+                const day = (weekStartsOn + index) % 7;
+                if (headerCells[index]) headerCells[index].textContent = calendarWeekdayName(day, lang);
+            }
         }
         const first = new Date(year, month, 1);
         const last = new Date(year, month + 1, 0);
-        const startOffset = first.getDay();
+        const weekStartsOn = Number.isInteger(calendarConfig.weekStartsOn) ? calendarConfig.weekStartsOn : 0;
+        const startOffset = (first.getDay() - weekStartsOn + 7) % 7;
         const daysInMonth = last.getDate();
         const previousMonthLast = new Date(year, month, 0).getDate();
         const todayKey = dateKey(new Date());
