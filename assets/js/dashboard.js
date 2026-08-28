@@ -299,14 +299,26 @@
         }).map(html => html).join("");
     };
 
+    const calendarConfig = window.MY_KIDS_HUB_CALENDAR || {};
+    const currentCalendarLanguage = () => localStorage.getItem("mykidshub-language") || "en";
+    const calendarMonthName = (month, lang) => calendarConfig.months?.[lang]?.[month] || new Date(2026, month, 1).toLocaleDateString(lang === "ml" ? "ml-IN" : "en-IN", { month: "long" });
+    const calendarWeekdayName = (day, lang) => calendarConfig.weekdays?.[lang]?.[day] || ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][day];
+    const getCalendarDayStatus = (date, lang = currentCalendarLanguage()) => calendarConfig.getDayStatus ? calendarConfig.getDayStatus(date, lang) : { type: "working", label: "" };
+
     const renderDashboardCalendar = () => {
         const body = $("dashboardCalendarBody");
         const title = $("dashboardCalendarTitle");
+        const table = $("dashboardCalendarTable");
         if (!body || !title) return;
         markLoaded("dashboardCalendarBody");
         const year = state.calendarCursor.getFullYear();
         const month = state.calendarCursor.getMonth();
-        title.textContent = state.calendarCursor.toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+        const lang = currentCalendarLanguage();
+        title.textContent = `${calendarMonthName(month, lang)} ${year}`;
+        if (table) {
+            const headerCells = table.querySelectorAll("thead th");
+            [0, 1, 2, 3, 4, 5, 6].forEach(day => { if (headerCells[day]) headerCells[day].textContent = calendarWeekdayName(day, lang); });
+        }
         const first = new Date(year, month, 1);
         const last = new Date(year, month + 1, 0);
         const startOffset = first.getDay();
@@ -326,10 +338,14 @@
         for (let i = 0; i < cells.length; i += 7) {
             html.push(`<tr>${cells.slice(i, i + 7).map(cell => {
                 const key = dateKey(cell.date);
+                const status = getCalendarDayStatus(cell.date, lang);
                 const hasEvent = state.events.some(event => event.event_date === key);
                 const hasDue = state.studentFees.some(fee => fee.due_date === key && getOutstandingFee(fee, paidByFee) > 0);
                 const marker = hasEvent || hasDue ? "<i></i>" : "";
-                return `<td class="${key === todayKey ? "today" : ""}"${cell.muted ? ' style="color:#c7ccd6;"' : ""}>${cell.date.getDate()}${marker}</td>`;
+                const classes = [key === todayKey ? "today" : "", status.type === "holiday" ? "holiday" : "working", cell.muted ? "muted" : ""].filter(Boolean).join(" ");
+                const style = cell.muted ? ' style="color:#c7ccd6;"' : "";
+                const label = status.label ? ` title="${escapeHtml(status.label)}"` : "";
+                return `<td class="${classes}"${style}${label}>${cell.date.getDate()}${marker}</td>`;
             }).join("")}</tr>`);
         }
         body.innerHTML = html.join("");
@@ -348,10 +364,21 @@
             const date = parseDate(event.event_date);
             if (date && date >= today && date <= limit) items.push({ date: event.event_date, title: event.title, type: "event", color: "dot-blue" });
         });
+        const lang = currentCalendarLanguage();
+        Object.entries(calendarConfig.holidays || {}).forEach(([dateValue, title]) => {
+            const date = parseDate(dateValue);
+            const label = title?.[lang] || title?.en || title;
+            if (date && date >= today && date <= limit) items.push({ date: dateValue, title: label, type: "holiday", color: "dot-amber" });
+        });
         state.studentFees.forEach(fee => {
             const date = parseDate(fee.due_date);
             if (date && date >= today && date <= limit && getOutstandingFee(fee, paidByFee) > 0) items.push({ date: fee.due_date, title: `${fee.fee_name} Due`, type: "fee", color: "dot-green" });
         });
+        for (let d = new Date(today); d <= limit; d.setDate(d.getDate() + 1)) {
+            const status = getCalendarDayStatus(d, lang);
+            const key = dateKey(d);
+            if (status.type === "holiday" && !calendarConfig.holidays?.[key]) items.push({ date: key, title: status.label, type: "holiday", color: "dot-amber" });
+        }
         items.sort((a, b) => String(a.date).localeCompare(String(b.date)));
         const unique = [];
         const seen = new Set();
@@ -470,6 +497,8 @@
             document.body.appendChild(message);
         }
     };
+
+    window.addEventListener("mykidshub:language-changed", () => { renderDashboardCalendar(); renderUpcomingEvents(); });
 
     window.addEventListener("mykidshub:data-changed", (event) => {
         const table = event.detail?.table;

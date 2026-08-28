@@ -94,6 +94,7 @@
         }
         document.documentElement.lang = lang === "ml" ? "ml" : "en";
         localStorage.setItem("mykidshub-language", lang);
+        window.dispatchEvent(new CustomEvent("mykidshub:language-changed", { detail: { language: lang } }));
     };
 
     const insertShellControls = () => {
