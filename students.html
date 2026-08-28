@@ -57,10 +57,6 @@
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
-                    <div>
-                        <h2>Students</h2>
-                        <p>View and manage student information.</p>
-                    </div>
                 </div>
                 <div class="topbar-right">
                     <button class="icon-btn bell-btn" type="button">
@@ -84,18 +80,18 @@
                         <h1>Students</h1>
                         <p>Manage student records connected to your My-Kids-Hub account.</p>
                     </div>
-                    <button class="primary-btn" id="addStudentBtn" type="button">
-                        <i class="fa-solid fa-user-plus"></i> Add Student
-                    </button>
+                    <div class="student-head-actions">
+                        <button class="primary-btn" id="refreshStudentsBtn" type="button" title="Refresh students">
+                            <i class="fa-solid fa-rotate"></i><span>Refresh</span>
+                        </button>
+                        <button class="primary-btn" id="addStudentBtn" type="button">
+                            <i class="fa-solid fa-user-plus"></i> Add Student
+                        </button>
+                    </div>
                 </section>
 
                 <section class="student-toolbar panel">
                     <div class="student-count"><strong id="studentCount">0</strong><span>Total Students</span></div>
-                    <div class="student-tools">
-                        <button id="refreshStudentsBtn" class="secondary-btn" type="button" title="Refresh students">
-                            <i class="fa-solid fa-rotate"></i><span>Refresh</span>
-                        </button>
-                    </div>
                 </section>
 
                 <section class="panel students-panel">
