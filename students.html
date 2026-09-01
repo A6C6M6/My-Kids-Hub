@@ -78,18 +78,6 @@
             </header>
 
             <div class="content-scroll">
-                <section class="student-page-head">
-                    <div class="student-head-spacer" aria-hidden="true"></div>
-                    <div class="student-head-actions">
-                        <button class="primary-btn" id="refreshStudentsBtn" type="button" title="Refresh students">
-                            <i class="fa-solid fa-rotate"></i><span>Refresh</span>
-                        </button>
-                        <button class="primary-btn" id="addStudentBtn" type="button">
-                            <i class="fa-solid fa-user-plus"></i> Add Student
-                        </button>
-                    </div>
-                </section>
-
                 <section class="student-stats-grid">
                     <article class="student-stat-card">
                         <div><span class="student-stat-label">Total Students</span><strong id="studentCount">0</strong></div>
@@ -138,7 +126,17 @@
                             <h3>Student Records</h3>
                             <p>View and manage student information.</p>
                         </div>
-                        <span id="studentResultCount" class="student-result-count">0 shown</span>
+                        <div class="student-table-head-right">
+                            <span id="studentResultCount" class="student-result-count">0 shown</span>
+                            <div class="student-head-actions">
+                                <button class="primary-btn" id="refreshStudentsBtn" type="button" title="Refresh students">
+                                    <i class="fa-solid fa-rotate"></i><span>Refresh</span>
+                                </button>
+                                <button class="primary-btn" id="addStudentBtn" type="button">
+                                    <i class="fa-solid fa-user-plus"></i> Add Student
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="table-wrap">
                         <table class="students-table">
